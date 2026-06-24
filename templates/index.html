@@ -590,6 +590,54 @@
         <button onclick="submitTransaction()" id="submitBtn" class="w-full py-4 text-white font-bold text-base rounded-2xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:16px;font-size:16px">Registrar</button>
       </div>
 
+      <!-- PASO TRANSPORTE -->
+      <div id="modalStepTransporte" style="display:none">
+        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+          <button onclick="backToStep1()" style="width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+          <span style="font-size:28px">🚗</span>
+          <div>
+            <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.05em">GASTO FIJO</p>
+            <p class="font-bold">Transporte</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ingresá los gastos de transporte del mes.</p>
+        <div id="transporteRows" style="margin-bottom:16px"></div>
+        <input type="date" id="transporteDate" class="input-field mb-5" />
+        <button onclick="submitTransporte()" class="w-full py-4 text-white font-bold text-base" style="background:linear-gradient(135deg,#F43F5E,#FB7185);border-radius:16px;font-size:16px;border:none;cursor:pointer">Registrar transporte</button>
+      </div>
+
+      <!-- PASO EDUCACIÓN -->
+      <div id="modalStepEducacion" style="display:none">
+        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+          <button onclick="backToStep1()" style="width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+          <span style="font-size:28px">📚</span>
+          <div>
+            <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.05em">GASTO FIJO</p>
+            <p class="font-bold">Educación</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ingresá los gastos educativos del mes.</p>
+        <div id="educacionRows" style="margin-bottom:16px"></div>
+        <input type="date" id="educacionDate" class="input-field mb-5" />
+        <button onclick="submitEducacion()" class="w-full py-4 text-white font-bold text-base" style="background:linear-gradient(135deg,#F43F5E,#FB7185);border-radius:16px;font-size:16px;border:none;cursor:pointer">Registrar educación</button>
+      </div>
+
+      <!-- PASO OTROS -->
+      <div id="modalStepOtros" style="display:none">
+        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+          <button onclick="backToStep1()" style="width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+          <span style="font-size:28px">📦</span>
+          <div>
+            <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.05em">OTROS GASTOS</p>
+            <p class="font-bold">Otros</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ingresá los gastos del mes.</p>
+        <div id="otrosRows" style="margin-bottom:16px"></div>
+        <input type="date" id="otrosDate" class="input-field mb-5" />
+        <button onclick="submitOtros()" class="w-full py-4 text-white font-bold text-base" style="background:linear-gradient(135deg,#F43F5E,#FB7185);border-radius:16px;font-size:16px;border:none;cursor:pointer">Registrar otros</button>
+      </div>
+
       <!-- PASO PRÉSTAMOS -->
       <div id="modalStepPrestamos" style="display:none">
         <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
@@ -657,18 +705,38 @@
   let pendingTx = null;
 
   const PRESTAMOS_ITEMS = [
-    { key:'prest_santander', label:'Santander',  icon:'🏦' },
-    { key:'prest_nacion',    label:'Nación',     icon:'🏦' },
-    { key:'prest_naranja',   label:'Naranja',    icon:'🟠' },
-    { key:'prest_iaf',       label:'IAF',        icon:'🏦' },
+    { key:'prest_santander', label:'Santander',            icon:'🏦' },
+    { key:'prest_nacion',    label:'Nación',               icon:'🏦' },
+    { key:'prest_naranja',   label:'Naranja',              icon:'🟠' },
+    { key:'prest_iaf',       label:'IAF',                  icon:'🏦' },
+    { key:'prest_mp',        label:'Mercado Pago',         icon:'🟢' },
   ];
 
   const TARJETAS_ITEMS = [
-    { key:'sant_visa',   label:'Santander Visa',            icon:'💳' },
-    { key:'sant_amex',   label:'Santander American Express', icon:'💳' },
-    { key:'naranja',     label:'Naranja',                   icon:'🟠' },
-    { key:'nat_visa',    label:'Nativa Visa',               icon:'💳' },
-    { key:'nat_mc',      label:'Nativa Mastercard',         icon:'💳' },
+    { key:'sant_visa',   label:'Santander Visa',             icon:'💳' },
+    { key:'sant_amex',   label:'Santander American Express',  icon:'💳' },
+    { key:'naranja',     label:'Naranja',                    icon:'🟠' },
+    { key:'nat_visa',    label:'Nativa Visa',                icon:'💳' },
+    { key:'nat_mc',      label:'Nativa Mastercard',          icon:'💳' },
+    { key:'mp_mc',       label:'Mercado Pago Mastercard',    icon:'🟢' },
+  ];
+
+  const TRANSPORTE_ITEMS = [
+    { key:'trans_seguros',    label:'Seguros',     icon:'🛡️' },
+    { key:'trans_combustible', label:'Combustible', icon:'⛽' },
+    { key:'trans_service',    label:'Service',     icon:'🔧' },
+  ];
+
+  const EDUCACION_ITEMS = [
+    { key:'educ_concordia',   label:'Cuota Concordia',    icon:'🎓' },
+    { key:'educ_transporte',  label:'Transporte Público', icon:'🚌' },
+  ];
+
+  const OTROS_ITEMS = [
+    { key:'otro_futfem',   label:'Fútbol Femenino',    icon:'⚽' },
+    { key:'otro_voley',    label:'Voley Femenino',     icon:'🏐' },
+    { key:'otro_modelaje', label:'Curso de Modelaje',  icon:'👗' },
+    { key:'otro_fut7',     label:'Fútbol 7',           icon:'⚽' },
   ];
 
   const SERVICIOS_ITEMS = [
@@ -701,7 +769,7 @@
       { key:'ocio',         label:'Ocio',        icon:'🎮' },
       { key:'ropa',         label:'Ropa',        icon:'👕' },
       { key:'ahorros',      label:'Ahorros',     icon:'🏦' },
-      { key:'otro',         label:'Otro',        icon:'📦' },
+      { key:'otro',         label:'Otros',       icon:'📦' },
     ]
   };
 
@@ -878,6 +946,9 @@
     document.getElementById('modalStepServicios').style.display = 'none';
     document.getElementById('modalStepTarjetas').style.display = 'none';
     document.getElementById('modalStepPrestamos').style.display = 'none';
+    document.getElementById('modalStepTransporte').style.display = 'none';
+    document.getElementById('modalStepEducacion').style.display = 'none';
+    document.getElementById('modalStepOtros').style.display = 'none';
     document.getElementById('txAmount').value = '';
     document.getElementById('txDesc').value = '';
   }
@@ -890,6 +961,9 @@
     document.getElementById('modalStepServicios').style.display = 'none';
     document.getElementById('modalStepTarjetas').style.display = 'none';
     document.getElementById('modalStepPrestamos').style.display = 'none';
+    document.getElementById('modalStepTransporte').style.display = 'none';
+    document.getElementById('modalStepEducacion').style.display = 'none';
+    document.getElementById('modalStepOtros').style.display = 'none';
     const incBtn = document.getElementById('typeIncome');
     const expBtn = document.getElementById('typeExpense');
     if (t === 'income') {
@@ -954,6 +1028,24 @@
       return;
     }
 
+    if (k === 'transporte') {
+      renderTransporteTable();
+      document.getElementById('modalStepTransporte').style.display = 'block';
+      return;
+    }
+
+    if (k === 'educacion') {
+      renderEducacionTable();
+      document.getElementById('modalStepEducacion').style.display = 'block';
+      return;
+    }
+
+    if (k === 'otro') {
+      renderOtrosTable();
+      document.getElementById('modalStepOtros').style.display = 'block';
+      return;
+    }
+
     const catObj = CATEGORIES[currentType].find(c => c.key === k);
     document.getElementById('selectedCatIcon').textContent = catObj.icon;
     document.getElementById('selectedCatLabel').textContent = catObj.label;
@@ -963,6 +1055,120 @@
     document.getElementById('submitBtn').textContent = currentType === 'income' ? 'Registrar ingreso' : 'Registrar gasto';
     document.getElementById('modalStep2').style.display = 'block';
     setTimeout(() => document.getElementById('txAmount').focus(), 100);
+  }
+
+  function renderTransporteTable() {
+    document.getElementById('transporteRows').innerHTML = TRANSPORTE_ITEMS.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F1F5F9">
+        <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${item.icon}</span>
+        <span style="flex:1;font-size:13px;font-weight:500;color:#1E293B">${item.label}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="color:#94A3B8;font-size:14px;font-weight:600">$</span>
+          <input type="number" id="tra_${item.key}" min="0" step="0.01" placeholder="0"
+            style="width:90px;border:2px solid #E2E8F0;border-radius:10px;padding:7px 10px;font-size:14px;outline:none;background:#F8FAFF;text-align:right"
+            onfocus="this.style.borderColor='#6C63FF'" onblur="this.style.borderColor='#E2E8F0'" />
+        </div>
+      </div>`).join('');
+    document.getElementById('transporteDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  function submitTransporte() {
+    const date = document.getElementById('transporteDate').value;
+    const nuevos = TRANSPORTE_ITEMS.filter(item => {
+      const v = parseFloat(document.getElementById('tra_' + item.key).value);
+      return v && v > 0;
+    }).map(item => ({
+      id: Date.now() + Math.random(),
+      type: 'expense',
+      profile: currentProfile,
+      cat: 'Transporte',
+      icon: '🚗',
+      desc: item.label,
+      amount: parseFloat(document.getElementById('tra_' + item.key).value),
+      date,
+      ai: false
+    }));
+    if (nuevos.length === 0) { showToast('⚠️ Ingresá al menos un monto mayor a $0'); return; }
+    nuevos.forEach(tx => saveTx(tx));
+    document.getElementById('txModal').classList.remove('open');
+    document.getElementById('modalStepTransporte').style.display = 'none';
+    showToast(`✅ ${nuevos.length} gasto(s) de transporte registrado(s)`);
+  }
+
+  function renderEducacionTable() {
+    document.getElementById('educacionRows').innerHTML = EDUCACION_ITEMS.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F1F5F9">
+        <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${item.icon}</span>
+        <span style="flex:1;font-size:13px;font-weight:500;color:#1E293B">${item.label}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="color:#94A3B8;font-size:14px;font-weight:600">$</span>
+          <input type="number" id="edu_${item.key}" min="0" step="0.01" placeholder="0"
+            style="width:90px;border:2px solid #E2E8F0;border-radius:10px;padding:7px 10px;font-size:14px;outline:none;background:#F8FAFF;text-align:right"
+            onfocus="this.style.borderColor='#6C63FF'" onblur="this.style.borderColor='#E2E8F0'" />
+        </div>
+      </div>`).join('');
+    document.getElementById('educacionDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  function submitEducacion() {
+    const date = document.getElementById('educacionDate').value;
+    const nuevos = EDUCACION_ITEMS.filter(item => {
+      const v = parseFloat(document.getElementById('edu_' + item.key).value);
+      return v && v > 0;
+    }).map(item => ({
+      id: Date.now() + Math.random(),
+      type: 'expense',
+      profile: currentProfile,
+      cat: 'Educación',
+      icon: '📚',
+      desc: item.label,
+      amount: parseFloat(document.getElementById('edu_' + item.key).value),
+      date,
+      ai: false
+    }));
+    if (nuevos.length === 0) { showToast('⚠️ Ingresá al menos un monto mayor a $0'); return; }
+    nuevos.forEach(tx => saveTx(tx));
+    document.getElementById('txModal').classList.remove('open');
+    document.getElementById('modalStepEducacion').style.display = 'none';
+    showToast(`✅ ${nuevos.length} gasto(s) de educación registrado(s)`);
+  }
+
+  function renderOtrosTable() {
+    document.getElementById('otrosRows').innerHTML = OTROS_ITEMS.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F1F5F9">
+        <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${item.icon}</span>
+        <span style="flex:1;font-size:13px;font-weight:500;color:#1E293B">${item.label}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="color:#94A3B8;font-size:14px;font-weight:600">$</span>
+          <input type="number" id="otr_${item.key}" min="0" step="0.01" placeholder="0"
+            style="width:90px;border:2px solid #E2E8F0;border-radius:10px;padding:7px 10px;font-size:14px;outline:none;background:#F8FAFF;text-align:right"
+            onfocus="this.style.borderColor='#6C63FF'" onblur="this.style.borderColor='#E2E8F0'" />
+        </div>
+      </div>`).join('');
+    document.getElementById('otrosDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  function submitOtros() {
+    const date = document.getElementById('otrosDate').value;
+    const nuevos = OTROS_ITEMS.filter(item => {
+      const v = parseFloat(document.getElementById('otr_' + item.key).value);
+      return v && v > 0;
+    }).map(item => ({
+      id: Date.now() + Math.random(),
+      type: 'expense',
+      profile: currentProfile,
+      cat: 'Otros',
+      icon: '📦',
+      desc: item.label,
+      amount: parseFloat(document.getElementById('otr_' + item.key).value),
+      date,
+      ai: false
+    }));
+    if (nuevos.length === 0) { showToast('⚠️ Ingresá al menos un monto mayor a $0'); return; }
+    nuevos.forEach(tx => saveTx(tx));
+    document.getElementById('txModal').classList.remove('open');
+    document.getElementById('modalStepOtros').style.display = 'none';
+    showToast(`✅ ${nuevos.length} gasto(s) registrado(s)`);
   }
 
   function renderPrestamosTable() {
