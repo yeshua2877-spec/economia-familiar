@@ -1,20 +1,54 @@
 import os
-from flask import Flask, render_template, request, jsonify
+import json
+from functools import wraps
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from anthropic import Anthropic
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-prod")
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
+
+APP_PASSWORD = os.environ.get("APP_PASSWORD", "familia2026")
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get("authenticated"):
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        pwd = request.form.get("password", "")
+        if pwd == APP_PASSWORD:
+            session["authenticated"] = True
+            return redirect(url_for("index"))
+        error = "Contraseña incorrecta"
+    return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("login"))
 
 
 @app.route("/")
+@login_required
 def index():
     return render_template("index.html")
 
 
 @app.route("/analizar-gasto", methods=["POST"])
+@login_required
 def analizar_gasto():
     data = request.json
     gasto = data.get("gasto", {})
@@ -46,7 +80,6 @@ INSTRUCCIONES:
         messages=[{"role": "user", "content": prompt}]
     )
 
-    import json
     try:
         result = json.loads(message.content[0].text)
     except Exception:
@@ -56,6 +89,7 @@ INSTRUCCIONES:
 
 
 @app.route("/chat-asesor", methods=["POST"])
+@login_required
 def chat_asesor():
     data = request.json
     mensaje = data.get("mensaje", "")

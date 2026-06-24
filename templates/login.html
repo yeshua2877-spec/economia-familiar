@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Economía Familiar — Acceso</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+    body {
+      background: linear-gradient(135deg, #0F0C29 0%, #302B63 50%, #24243E 100%);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card {
+      background: white; border-radius: 28px; padding: 48px 40px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.4);
+    }
+    .input-field {
+      width: 100%; border: 2px solid #E2E8F0; border-radius: 12px;
+      padding: 14px 16px; font-size: 15px; outline: none;
+      background: #F8FAFF; transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: #6C63FF; background: white; }
+    .btn {
+      width: 100%; padding: 14px; border-radius: 14px; font-size: 16px;
+      font-weight: 700; color: white; cursor: pointer; border: none;
+      background: linear-gradient(135deg, #6C63FF, #9B5FFF);
+      box-shadow: 0 8px 24px rgba(108,99,255,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 12px 32px rgba(108,99,255,0.5); }
+    .btn:active { transform: translateY(0); }
+    .error {
+      background: #FEE2E2; border: 2px solid #F43F5E; border-radius: 12px;
+      padding: 12px 16px; color: #BE123C; font-size: 14px; font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="flex flex-col items-center mb-8">
+      <div style="width:64px;height:64px;border-radius:20px;background:linear-gradient(135deg,#6C63FF,#C084FC);display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:16px">🏠</div>
+      <h1 style="font-size:22px;font-weight:800;color:#1E293B">Economía Familiar</h1>
+      <p style="color:#94A3B8;font-size:14px;margin-top:4px">Ingresá tu contraseña para continuar</p>
+    </div>
+
+    {% if error %}
+    <div class="error mb-5">⚠️ {{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+      <div class="mb-5">
+        <label style="font-size:13px;font-weight:600;color:#64748B;display:block;margin-bottom:8px">CONTRASEÑA</label>
+        <input
+          type="password"
+          name="password"
+          class="input-field"
+          placeholder="••••••••"
+          autofocus
+          required
+        />
+      </div>
+      <button type="submit" class="btn">Ingresar →</button>
+    </form>
+  </div>
+</body>
+</html>
