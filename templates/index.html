@@ -26,6 +26,7 @@
 
     body { background: var(--bg); color: var(--text); }
 
+    /* Sidebar */
     .sidebar {
       background: linear-gradient(180deg, #0F0C29 0%, #302B63 50%, #24243E 100%);
       width: 260px; min-height: 100vh; position: fixed; left: 0; top: 0; z-index: 50;
@@ -44,6 +45,7 @@
     }
     .sidebar-link .icon { font-size: 20px; width: 24px; text-align: center; }
 
+    /* Cards */
     .card {
       background: white; border-radius: 20px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.06);
@@ -51,20 +53,24 @@
     }
     .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
 
+    /* Balance card */
     .balance-card {
       background: linear-gradient(135deg, #6C63FF 0%, #9B5FFF 50%, #C084FC 100%);
       border-radius: 24px; color: white;
       box-shadow: 0 12px 40px rgba(108,99,255,0.4);
     }
 
+    /* Stat cards */
     .stat-income { background: linear-gradient(135deg, #10B981, #34D399); }
     .stat-expense { background: linear-gradient(135deg, #F43F5E, #FB7185); }
     .stat-savings { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
     .stat-budget { background: linear-gradient(135deg, #F59E0B, #FCD34D); }
 
+    /* Progress bar */
     .progress-bar { height: 8px; border-radius: 100px; background: #E2E8F0; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease; }
 
+    /* Transaction item */
     .tx-item {
       display: flex; align-items: center; gap: 12px; padding: 14px 16px;
       border-radius: 14px; transition: background 0.15s ease; cursor: pointer;
@@ -76,6 +82,7 @@
       flex-shrink: 0;
     }
 
+    /* AI Alert */
     .ai-alert {
       background: linear-gradient(135deg, #FEF3C7, #FDE68A);
       border: 2px solid #F59E0B; border-radius: 16px; padding: 16px;
@@ -86,6 +93,7 @@
       border-color: #F43F5E;
     }
 
+    /* FAB */
     .fab {
       position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
       border-radius: 50%; background: linear-gradient(135deg, #2563EB, #3B82F6);
@@ -97,6 +105,7 @@
     }
     .fab:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(37,99,235,0.6); }
 
+    /* Modal */
     .modal-bg {
       position: fixed; inset: 0; background: rgba(15,12,41,0.6);
       backdrop-filter: blur(4px); z-index: 200; display: none;
@@ -106,9 +115,10 @@
     .modal {
       background: white; border-radius: 28px; padding: 32px;
       width: 90%; max-width: 480px; box-shadow: 0 24px 80px rgba(0,0,0,0.2);
-      animation: slideUp 0.3s ease;
+      animation: slideUp 0.3s ease; max-height: 92vh; overflow-y: auto;
     }
 
+    /* Input */
     .input-field {
       width: 100%; border: 2px solid #E2E8F0; border-radius: 12px;
       padding: 12px 16px; font-size: 15px; transition: border-color 0.2s ease;
@@ -116,6 +126,7 @@
     }
     .input-field:focus { border-color: #6C63FF; background: white; }
 
+    /* Tabs */
     .tab-btn {
       padding: 8px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
       cursor: pointer; transition: all 0.2s ease; color: var(--muted);
@@ -125,6 +136,7 @@
       color: white; box-shadow: 0 4px 12px rgba(108,99,255,0.3);
     }
 
+    /* Profile badge */
     .profile-badge {
       padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
       cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent;
@@ -134,9 +146,11 @@
     .profile-badge.active-family { background: #F0FDF4; color: #10B981; border-color: #10B981; }
     .profile-badge.inactive { background: #F1F5F9; color: #94A3B8; }
 
+    /* View sections */
     .view { display: none; }
     .view.active { display: block; animation: fadeIn 0.3s ease; }
 
+    /* AI Chat */
     .chat-bubble-ai {
       background: linear-gradient(135deg, #EDE9FF, #E0DBFF);
       border-radius: 18px 18px 18px 4px; padding: 14px 18px; max-width: 85%;
@@ -148,33 +162,39 @@
       padding: 14px 18px; max-width: 85%; font-size: 14px;
     }
 
+    /* Scrollbar */
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 100px; }
 
+    /* Animations */
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
     .pulse { animation: pulse 2s infinite; }
 
+    /* Responsive */
     @media (max-width: 768px) {
       .sidebar { transform: translateX(-100%); }
       .sidebar.open { transform: translateX(0); }
       .main-content { margin-left: 0 !important; }
     }
 
+    /* Notification dot */
     .notif-dot {
       width: 8px; height: 8px; border-radius: 50%; background: #F43F5E;
       position: absolute; top: -2px; right: -2px;
     }
 
+    /* Amount input large */
     .amount-input {
       font-size: 42px; font-weight: 700; border: none; outline: none;
       background: transparent; color: var(--text); text-align: center; width: 100%;
     }
     .amount-input::placeholder { color: #CBD5E1; }
 
+    /* Category selector */
     .cat-btn {
       padding: 8px 14px; border-radius: 10px; font-size: 13px;
       cursor: pointer; border: 2px solid #E2E8F0; background: white;
@@ -184,6 +204,7 @@
     .cat-btn:hover { border-color: #6C63FF; background: #EDE9FF; }
     .cat-btn.selected { border-color: #6C63FF; background: #EDE9FF; color: #6C63FF; }
 
+    /* Badge */
     .badge {
       font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
     }
@@ -193,7 +214,11 @@
 </head>
 <body class="overflow-x-hidden">
 
+  <!-- ═══════════════════════════════════════════════
+       SIDEBAR
+  ═══════════════════════════════════════════════ -->
   <aside class="sidebar" id="sidebar">
+    <!-- Logo -->
     <div class="p-6 border-b border-white/10">
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-16 flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#6C63FF,#C084FC);border-radius:12px">🏠</div>
@@ -204,6 +229,7 @@
       </div>
     </div>
 
+    <!-- Nav -->
     <nav class="p-4 flex flex-col gap-1 mt-2">
       <div class="sidebar-link active" onclick="showView('dashboard')">
         <span class="icon">📊</span>
@@ -228,6 +254,7 @@
       </div>
     </nav>
 
+    <!-- Profile switcher -->
     <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
       <p style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;letter-spacing:0.05em;padding:0 8px 8px">PERFIL ACTIVO</p>
       <div class="flex flex-col gap-2">
@@ -248,23 +275,30 @@
     </div>
   </aside>
 
+  <!-- ═══════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════ -->
   <main class="main-content" style="margin-left:260px;min-height:100vh;padding:24px 28px;padding-bottom:100px" id="mainContent">
 
+    <!-- TOP BAR -->
     <div class="flex items-center justify-between mb-8">
       <div>
         <p style="color:var(--muted);font-size:13px;font-weight:500" id="greeting">Buenos días ☀️</p>
         <h1 class="text-2xl font-bold mt-0.5" id="profileTitle">Mi Economía</h1>
       </div>
       <div class="flex items-center gap-3">
+        <!-- Profile tabs -->
         <div class="card flex gap-1 p-1.5 flex-row">
           <div class="profile-badge active-p1" id="tab-p1" onclick="switchProfile('p1')">👤 Persona 1</div>
           <div class="profile-badge inactive" id="tab-p2" onclick="switchProfile('p2')">👤 Persona 2</div>
           <div class="profile-badge inactive" id="tab-family" onclick="switchProfile('family')">👨‍👩‍👧 Familia</div>
         </div>
+        <!-- Month -->
         <div class="card px-4 py-2.5 flex items-center gap-2">
           <span style="font-size:18px">📅</span>
           <span class="font-semibold text-sm" id="currentMonth">Junio 2026</span>
         </div>
+        <!-- Notif -->
         <div class="card w-10 h-10 flex items-center justify-center cursor-pointer relative" onclick="showView('advisor')">
           <span style="font-size:18px">🔔</span>
           <div class="notif-dot"></div>
@@ -272,6 +306,7 @@
       </div>
     </div>
 
+    <!-- AI ALERT (shown when triggered) -->
     <div id="aiAlertBox" class="ai-alert mb-6" style="display:none">
       <div class="flex gap-3">
         <span style="font-size:28px">🤖</span>
@@ -286,7 +321,10 @@
       </div>
     </div>
 
+    <!-- ────────────── DASHBOARD ────────────── -->
     <div id="view-dashboard" class="view active">
+
+      <!-- Balance principal -->
       <div class="balance-card p-8 mb-6 relative overflow-hidden">
         <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07)"></div>
         <div style="position:absolute;bottom:-60px;right:40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)"></div>
@@ -294,94 +332,207 @@
         <p class="text-5xl font-black mt-2 mb-1" id="balanceMain">$3,850.00</p>
         <p style="color:rgba(255,255,255,0.6);font-size:13px">↑ 12% respecto al mes pasado</p>
         <div class="flex gap-6 mt-6">
-          <div><p style="color:rgba(255,255,255,0.6);font-size:12px">Ingresos</p><p class="font-bold text-lg">$6,500.00</p></div>
+          <div>
+            <p style="color:rgba(255,255,255,0.6);font-size:12px">Ingresos</p>
+            <p class="font-bold text-lg">$6,500.00</p>
+          </div>
           <div style="width:1px;background:rgba(255,255,255,0.2)"></div>
-          <div><p style="color:rgba(255,255,255,0.6);font-size:12px">Gastos</p><p class="font-bold text-lg">$2,650.00</p></div>
+          <div>
+            <p style="color:rgba(255,255,255,0.6);font-size:12px">Gastos</p>
+            <p class="font-bold text-lg">$2,650.00</p>
+          </div>
           <div style="width:1px;background:rgba(255,255,255,0.2)"></div>
-          <div><p style="color:rgba(255,255,255,0.6);font-size:12px">Ahorros</p><p class="font-bold text-lg" id="savingsDisplay">$3,850.00</p></div>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-4 gap-4 mb-6">
-        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-income" style="border-radius:12px"><span style="color:white;font-size:18px">💰</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">INGRESOS</p><p class="text-xl font-bold mt-0.5" style="color:#10B981">$6,500</p><p style="color:var(--muted);font-size:12px" class="mt-1">+$500 vs mayo</p></div>
-        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-expense" style="border-radius:12px"><span style="color:white;font-size:18px">💸</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">GASTOS</p><p class="text-xl font-bold mt-0.5" style="color:#F43F5E">$2,650</p><p style="color:var(--muted);font-size:12px" class="mt-1">-$120 vs mayo</p></div>
-        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-savings" style="border-radius:12px"><span style="color:white;font-size:18px">🏦</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">AHORROS</p><p class="text-xl font-bold mt-0.5" style="color:#3B82F6">$3,850</p><p style="color:var(--muted);font-size:12px" class="mt-1">59% del ingreso</p></div>
-        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-budget" style="border-radius:12px"><span style="color:white;font-size:18px">🎯</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">PRESUPUESTO</p><p class="text-xl font-bold mt-0.5" style="color:#F59E0B">72%</p><p style="color:var(--muted);font-size:12px" class="mt-1">Usado este mes</p></div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-4 mb-6">
-        <div class="card p-6">
-          <h3 class="font-bold mb-4">Gastos por categoría</h3>
-          <div style="position:relative;height:200px"><canvas id="donutChart"></canvas></div>
-          <div class="flex flex-col gap-2 mt-4">
-            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#6C63FF;display:inline-block"></span>Alimentación</div><span class="font-semibold">$850</span></div>
-            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#10B981;display:inline-block"></span>Transporte</div><span class="font-semibold">$420</span></div>
-            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#F59E0B;display:inline-block"></span>Servicios</div><span class="font-semibold">$680</span></div>
-            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#F43F5E;display:inline-block"></span>Ocio</div><span class="font-semibold">$700</span></div>
+          <div>
+            <p style="color:rgba(255,255,255,0.6);font-size:12px">Ahorros</p>
+            <p class="font-bold text-lg" id="savingsDisplay">$3,850.00</p>
           </div>
         </div>
-        <div class="card p-6 col-span-2">
-          <h3 class="font-bold mb-4">Ingresos vs Gastos — últimos 6 meses</h3>
-          <div style="height:240px"><canvas id="barChart"></canvas></div>
+      </div>
+
+      <!-- Stat cards -->
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="card p-5">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-income" style="border-radius:12px">
+            <span style="color:white;font-size:18px">💰</span>
+          </div>
+          <p style="color:var(--muted);font-size:12px;font-weight:600">INGRESOS</p>
+          <p class="text-xl font-bold mt-0.5" style="color:#10B981">$6,500</p>
+          <p style="color:var(--muted);font-size:12px" class="mt-1">+$500 vs junio</p>
+        </div>
+        <div class="card p-5">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-expense" style="border-radius:12px">
+            <span style="color:white;font-size:18px">💸</span>
+          </div>
+          <p style="color:var(--muted);font-size:12px;font-weight:600">GASTOS</p>
+          <p class="text-xl font-bold mt-0.5" style="color:#F43F5E">$2,650</p>
+          <p style="color:var(--muted);font-size:12px" class="mt-1">-$120 vs junio</p>
+        </div>
+        <div class="card p-5">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-savings" style="border-radius:12px">
+            <span style="color:white;font-size:18px">🏦</span>
+          </div>
+          <p style="color:var(--muted);font-size:12px;font-weight:600">AHORROS</p>
+          <p class="text-xl font-bold mt-0.5" style="color:#3B82F6">$3,850</p>
+          <p style="color:var(--muted);font-size:12px" class="mt-1">59% del ingreso</p>
+        </div>
+        <div class="card p-5">
+          <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-budget" style="border-radius:12px">
+            <span style="color:white;font-size:18px">🎯</span>
+          </div>
+          <p style="color:var(--muted);font-size:12px;font-weight:600">PRESUPUESTO</p>
+          <p class="text-xl font-bold mt-0.5" style="color:#F59E0B">72%</p>
+          <p style="color:var(--muted);font-size:12px" class="mt-1">Usado este mes</p>
         </div>
       </div>
 
+      <!-- Charts + Recientes -->
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <!-- Donut chart -->
+        <div class="card p-6">
+          <h3 class="font-bold mb-4">Gastos por categoría</h3>
+          <div style="position:relative;height:200px">
+            <canvas id="donutChart"></canvas>
+          </div>
+          <div class="flex flex-col gap-2 mt-4">
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#6C63FF;display:inline-block"></span>Alimentación</div>
+              <span class="font-semibold">$850</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#10B981;display:inline-block"></span>Transporte</div>
+              <span class="font-semibold">$420</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#F59E0B;display:inline-block"></span>Servicios</div>
+              <span class="font-semibold">$680</span>
+            </div>
+            <div class="flex items-center justify-between text-sm">
+              <div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#F43F5E;display:inline-block"></span>Ocio</div>
+              <span class="font-semibold">$700</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bar chart -->
+        <div class="card p-6 col-span-2">
+          <h3 class="font-bold mb-4">Ingresos vs Gastos — últimos 6 meses</h3>
+          <div style="height:240px">
+            <canvas id="barChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Transacciones recientes -->
       <div class="card p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-bold">Transacciones recientes</h3>
           <button onclick="showView('transactions')" style="color:var(--primary);font-size:13px;font-weight:600;cursor:pointer">Ver todas →</button>
         </div>
-        <div id="recentTxList"></div>
+        <div id="recentTxList">
+          <!-- filled by JS -->
+        </div>
       </div>
     </div>
 
+    <!-- ────────────── TRANSACCIONES ────────────── -->
     <div id="view-transactions" class="view">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold">Historial de Transacciones</h2>
         <div class="flex gap-2">
-          <select class="input-field" style="width:auto;padding:8px 14px"><option>Junio 2026</option><option>Mayo 2026</option><option>Abril 2026</option></select>
-          <select class="input-field" style="width:auto;padding:8px 14px"><option>Todos los tipos</option><option>Ingresos</option><option>Gastos</option></select>
+          <select class="input-field" style="width:auto;padding:8px 14px">
+            <option>Junio 2026</option>
+            <option>Mayo 2026</option>
+            <option>Abril 2026</option>
+          </select>
+          <select class="input-field" style="width:auto;padding:8px 14px">
+            <option>Todos los tipos</option>
+            <option>Ingresos</option>
+            <option>Gastos</option>
+          </select>
         </div>
       </div>
-      <div class="card p-4" id="fullTxList"></div>
+      <div class="card p-4" id="fullTxList">
+        <!-- filled by JS -->
+      </div>
     </div>
 
+    <!-- ────────────── PRESUPUESTOS ────────────── -->
     <div id="view-budgets" class="view">
       <div class="flex items-center justify-between mb-6">
         <h2 class="text-xl font-bold">Presupuestos — Junio 2026</h2>
         <button onclick="openBudgetModal()" class="px-5 py-2.5 text-sm font-semibold text-white rounded-xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:12px">+ Nuevo presupuesto</button>
       </div>
-      <div class="grid grid-cols-2 gap-4" id="budgetList"></div>
+
+      <div class="grid grid-cols-2 gap-4" id="budgetList">
+        <!-- filled by JS -->
+      </div>
     </div>
 
+    <!-- ────────────── REPORTES ────────────── -->
     <div id="view-reports" class="view">
       <h2 class="text-xl font-bold mb-6">Reportes y Análisis</h2>
       <div class="grid grid-cols-2 gap-4 mb-6">
-        <div class="card p-6"><h3 class="font-bold mb-4">Evolución del ahorro</h3><div style="height:220px"><canvas id="savingsChart"></canvas></div></div>
-        <div class="card p-6"><h3 class="font-bold mb-4">Distribución de gastos</h3><div style="height:220px"><canvas id="pieChart"></canvas></div></div>
+        <div class="card p-6">
+          <h3 class="font-bold mb-4">Evolución del ahorro</h3>
+          <div style="height:220px"><canvas id="savingsChart"></canvas></div>
+        </div>
+        <div class="card p-6">
+          <h3 class="font-bold mb-4">Distribución de gastos</h3>
+          <div style="height:220px"><canvas id="pieChart"></canvas></div>
+        </div>
       </div>
-      <div class="card p-6"><h3 class="font-bold mb-4">Comparación mensual por categoría</h3><div style="height:260px"><canvas id="categoryChart"></canvas></div></div>
+      <div class="card p-6">
+        <h3 class="font-bold mb-4">Comparación mensual por categoría</h3>
+        <div style="height:260px"><canvas id="categoryChart"></canvas></div>
+      </div>
     </div>
 
+    <!-- ────────────── ASESOR IA ────────────── -->
     <div id="view-advisor" class="view">
       <h2 class="text-xl font-bold mb-6">Asesor de Inteligencia Artificial</h2>
+
+      <!-- Alertas activas -->
       <div class="card p-5 mb-5" style="border-left: 4px solid #F43F5E">
-        <div class="flex items-start gap-3"><span style="font-size:24px">🚨</span><div><p class="font-bold text-sm" style="color:#F43F5E">ALERTA ACTIVA — hace 2 horas</p><p class="text-sm mt-1 leading-relaxed" style="color:var(--text)">El gasto en <strong>Ocio / Entretenimiento</strong> alcanzó el <strong>94% del presupuesto mensual</strong>. Con 8 días restantes del mes, hay riesgo de exceder el límite de $750. Se recomienda pausar gastos en esta categoría.</p></div></div>
+        <div class="flex items-start gap-3">
+          <span style="font-size:24px">🚨</span>
+          <div>
+            <p class="font-bold text-sm" style="color:#F43F5E">ALERTA ACTIVA — hace 2 horas</p>
+            <p class="text-sm mt-1 leading-relaxed" style="color:var(--text)">El gasto en <strong>Ocio / Entretenimiento</strong> alcanzó el <strong>94% del presupuesto mensual</strong>. Con 8 días restantes del mes, hay riesgo de exceder el límite de $750. Se recomienda pausar gastos en esta categoría.</p>
+          </div>
+        </div>
       </div>
       <div class="card p-5 mb-5" style="border-left: 4px solid #F59E0B">
-        <div class="flex items-start gap-3"><span style="font-size:24px">⚠️</span><div><p class="font-bold text-sm" style="color:#F59E0B">RECOMENDACIÓN — hace 5 horas</p><p class="text-sm mt-1 leading-relaxed" style="color:var(--text)">Se detectó un gasto de <strong>$85 en restaurantes</strong> siendo el tercer gasto de este tipo en la semana. El promedio histórico es de 1 vez por semana. Considera preparar comida en casa para optimizar recursos.</p></div></div>
+        <div class="flex items-start gap-3">
+          <span style="font-size:24px">⚠️</span>
+          <div>
+            <p class="font-bold text-sm" style="color:#F59E0B">RECOMENDACIÓN — hace 5 horas</p>
+            <p class="text-sm mt-1 leading-relaxed" style="color:var(--text)">Se detectó un gasto de <strong>$85 en restaurantes</strong> siendo el tercer gasto de este tipo en la semana. El promedio histórico es de 1 vez por semana. Considera preparar comida en casa para optimizar recursos.</p>
+          </div>
+        </div>
       </div>
+
+      <!-- Chat -->
       <div class="card p-6">
         <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
           <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
-          <div><p class="font-bold">Asesor Financiero IA</p><p style="color:#10B981;font-size:12px;font-weight:600">● En línea</p></div>
+          <div>
+            <p class="font-bold">Asesor Financiero IA</p>
+            <p style="color:#10B981;font-size:12px;font-weight:600">● En línea</p>
+          </div>
         </div>
+
+        <!-- Messages -->
         <div id="chatMessages" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:4px">
           <div class="flex gap-3">
             <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
-            <div class="chat-bubble-ai">Hola 👋 Soy tu asesor financiero. Analizo tus gastos en tiempo real y te aviso cuando detecto algo que puede afectar la economía familiar.<br><br>Este mes van bien: el ahorro está al <strong>59%</strong>. Hay 2 alertas activas que deberías revisar. ¿En qué te ayudo?</div>
+            <div class="chat-bubble-ai">
+              Hola 👋 Soy tu asesor financiero. Analizo tus gastos en tiempo real y te aviso cuando detecto algo que puede afectar la economía familiar.<br><br>
+              Este mes van bien: el ahorro está al <strong>59%</strong>. Hay 2 alertas activas que deberías revisar. ¿En qué te ayudo?
+            </div>
           </div>
         </div>
+
+        <!-- Input -->
         <div class="flex gap-3 mt-4 pt-4" style="border-top:2px solid #F1F5F9">
           <input type="text" id="chatInput" class="input-field flex-1" placeholder="Pregunta al asesor... (Ej: ¿Cómo podemos ahorrar más?)" onkeydown="if(event.key==='Enter')sendChat()" />
           <button onclick="sendChat()" class="px-5 py-3 text-white font-semibold rounded-xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:12px;white-space:nowrap">Enviar ✨</button>
@@ -391,14 +542,27 @@
 
   </main>
 
+  <!-- ═══════════════════════════════════════════════
+       FAB — NUEVO GASTO/INGRESO
+  ═══════════════════════════════════════════════ -->
   <div class="fab" onclick="openTxModal()" title="Nueva transacción">+</div>
 
+  <!-- ═══════════════════════════════════════════════
+       MODAL — NUEVA TRANSACCIÓN
+  ═══════════════════════════════════════════════ -->
   <div class="modal-bg" id="txModal" onclick="closeTxModal(event)">
     <div class="modal" onclick="event.stopPropagation()">
+      <!-- Type selector -->
       <div class="flex gap-2 mb-6 p-1.5 rounded-2xl" style="background:#F1F5F9">
-        <button id="typeIncome" class="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all" onclick="setType('income')" style="background:linear-gradient(135deg,#10B981,#34D399);color:white">↑ Ingreso</button>
-        <button id="typeExpense" class="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all" onclick="setType('expense')" style="color:#94A3B8">↓ Gasto</button>
+        <button id="typeIncome" class="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all" onclick="setType('income')" style="background:linear-gradient(135deg,#10B981,#34D399);color:white">
+          ↑ Ingreso
+        </button>
+        <button id="typeExpense" class="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all" onclick="setType('expense')" style="color:#94A3B8">
+          ↓ Gasto
+        </button>
       </div>
+
+      <!-- Amount -->
       <div class="text-center mb-6 pb-6" style="border-bottom:2px solid #F1F5F9">
         <p style="color:var(--muted);font-size:13px;font-weight:500;margin-bottom:4px">MONTO</p>
         <div class="flex items-center justify-center gap-1">
@@ -406,17 +570,33 @@
           <input type="number" id="txAmount" class="amount-input" placeholder="0.00" step="0.01" style="max-width:200px" />
         </div>
       </div>
+
+      <!-- Category -->
       <p style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px">CATEGORÍA</p>
-      <div class="flex gap-2 flex-wrap mb-5" id="catGrid"></div>
+      <div class="flex gap-2 flex-wrap mb-5" id="catGrid">
+        <!-- filled by JS -->
+      </div>
+
+      <!-- Description + Date -->
       <div class="flex flex-col gap-3 mb-6">
         <input type="text" id="txDesc" class="input-field" placeholder="Descripción (ej: Supermercado semanal)" />
         <input type="date" id="txDate" class="input-field" />
       </div>
-      <button onclick="submitTransaction()" id="submitBtn" class="w-full py-4 text-white font-bold text-base rounded-2xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:16px;font-size:16px">Registrar ingreso</button>
+
+      <!-- Submit -->
+      <button onclick="submitTransaction()" id="submitBtn" class="w-full py-4 text-white font-bold text-base rounded-2xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:16px;font-size:16px">
+        Registrar ingreso
+      </button>
     </div>
   </div>
 
+  <!-- ═══════════════════════════════════════════════
+       SCRIPT
+  ═══════════════════════════════════════════════ -->
   <script>
+  // ──────────────────────────────────────────────
+  // STATE
+  // ──────────────────────────────────────────────
   let currentProfile = 'p1';
   let currentType = 'income';
   let selectedCategory = '';
@@ -431,14 +611,14 @@
       { key:'otro',       label:'Otro',       icon:'✨' },
     ],
     expense: [
-      { key:'alimentacion', label:'Comida',      icon:'🛒' },
-      { key:'transporte',   label:'Transporte',  icon:'🚗' },
-      { key:'servicios',    label:'Servicios',   icon:'⚡' },
+      { key:'servicios',    label:'Servicios e Impuestos', icon:'⚡', group:'fixed' },
+      { key:'educacion',    label:'Educación',             icon:'📚', group:'fixed' },
+      { key:'alimentacion', label:'Alimentos',             icon:'🛒', group:'fixed' },
+      { key:'transporte',   label:'Transporte',            icon:'🚗', group:'fixed' },
       { key:'salud',        label:'Salud',       icon:'🏥' },
-      { key:'educacion',    label:'Educación',   icon:'📚' },
       { key:'ocio',         label:'Ocio',        icon:'🎮' },
       { key:'ropa',         label:'Ropa',        icon:'👕' },
-      { key:'hogar',        label:'Hogar',       icon:'🏠' },
+      { key:'ahorros',      label:'Ahorros',     icon:'🏦' },
       { key:'otro',         label:'Otro',        icon:'📦' },
     ]
   };
@@ -464,11 +644,14 @@
       { id:7,  type:'expense', profile:'p2',  cat:'ropa',       icon:'👕', desc:'Ropa verano',          amount:210,  date:'2026-06-16', ai:true  },
       { id:8,  type:'expense', profile:'p1',  cat:'salud',      icon:'🏥', desc:'Farmacia',             amount:45,   date:'2026-06-18', ai:false },
       { id:9,  type:'income',  profile:'p1',  cat:'freelance',  icon:'💻', desc:'Proyecto diseño web',  amount:800,  date:'2026-06-20', ai:false },
-      { id:10, type:'expense', profile:'p2',  cat:'hogar',      icon:'🏠', desc:'Electricidad',         amount:180,  date:'2026-06-22', ai:false },
+      { id:10, type:'expense', profile:'p2',  cat:'ahorros',    icon:'🏦', desc:'Ahorro mensual',        amount:180,  date:'2026-06-22', ai:false },
     ];
     localStorage.setItem('txs', JSON.stringify(transactions));
   }
 
+  // ──────────────────────────────────────────────
+  // INIT
+  // ──────────────────────────────────────────────
   window.onload = () => {
     updateGreeting();
     updateDate();
@@ -493,6 +676,9 @@
     document.getElementById('currentMonth').textContent = `${months[d.getMonth()]} ${d.getFullYear()}`;
   }
 
+  // ──────────────────────────────────────────────
+  // PROFILE
+  // ──────────────────────────────────────────────
   function switchProfile(p) {
     currentProfile = p;
     ['p1','p2','family'].forEach(x => {
@@ -510,6 +696,9 @@
     renderFullTx();
   }
 
+  // ──────────────────────────────────────────────
+  // VIEWS
+  // ──────────────────────────────────────────────
   function showView(v) {
     document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
     document.getElementById(`view-${v}`).classList.add('active');
@@ -519,18 +708,31 @@
     if (v === 'reports') initReportCharts();
   }
 
+  // ──────────────────────────────────────────────
+  // RENDER TRANSACTIONS
+  // ──────────────────────────────────────────────
   function getTx() {
     if (currentProfile === 'family') return transactions;
     return transactions.filter(t => t.profile === currentProfile);
   }
 
-  function txHTML(t) {
+  function txHTML(t, mini = false) {
     const isInc = t.type === 'income';
     const color = isInc ? '#10B981' : '#F43F5E';
     const bg    = isInc ? '#D1FAE5' : '#FEE2E2';
     const sign  = isInc ? '+' : '-';
     const aiBadge = t.ai ? `<span class="badge badge-ai ml-2">🤖 IA alertó</span>` : '';
-    return `<div class="tx-item"><div class="tx-icon" style="background:${bg};">${t.icon}</div><div class="flex-1"><div class="flex items-center gap-1"><p class="font-semibold text-sm">${t.desc}</p>${aiBadge}</div><p style="color:var(--muted);font-size:12px">${t.date} · ${t.cat}</p></div><p class="font-bold" style="color:${color}">${sign}$${t.amount.toFixed(2)}</p></div>`;
+    return `
+    <div class="tx-item" onclick="">
+      <div class="tx-icon" style="background:${bg};">${t.icon}</div>
+      <div class="flex-1">
+        <div class="flex items-center gap-1">
+          <p class="font-semibold text-sm">${t.desc}</p>${aiBadge}
+        </div>
+        <p style="color:var(--muted);font-size:12px">${t.date} · ${t.cat}</p>
+      </div>
+      <p class="font-bold" style="color:${color}">${sign}$${t.amount.toFixed(2)}</p>
+    </div>`;
   }
 
   function renderRecentTx() {
@@ -543,15 +745,37 @@
     document.getElementById('fullTxList').innerHTML = list.map(t => txHTML(t)).join('') || '<p style="color:var(--muted);text-align:center;padding:20px">No hay transacciones</p>';
   }
 
+  // ──────────────────────────────────────────────
+  // RENDER BUDGETS
+  // ──────────────────────────────────────────────
   function renderBudgets() {
     document.getElementById('budgetList').innerHTML = BUDGETS.map(b => {
       const pct = Math.round((b.spent / b.limit) * 100);
       const over = pct >= 90;
       const barColor = pct >= 90 ? '#F43F5E' : pct >= 70 ? '#F59E0B' : '#10B981';
-      return `<div class="card p-6"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F8FAFF;border-radius:12px">${b.icon}</div><div><p class="font-semibold">${b.cat}</p><p style="color:var(--muted);font-size:12px">$${b.spent} de $${b.limit}</p></div></div><span class="font-bold text-lg" style="color:${barColor}">${pct}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div></div>${over ? '<p style="color:#F43F5E;font-size:12px;font-weight:600;margin-top:8px">⚠️ Límite casi alcanzado</p>' : ''}</div>`;
+      return `
+      <div class="card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F8FAFF;border-radius:12px">${b.icon}</div>
+            <div>
+              <p class="font-semibold">${b.cat}</p>
+              <p style="color:var(--muted);font-size:12px">$${b.spent} de $${b.limit}</p>
+            </div>
+          </div>
+          <span class="font-bold text-lg" style="color:${barColor}">${pct}%</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div>
+        </div>
+        ${over ? `<p style="color:#F43F5E;font-size:12px;font-weight:600;margin-top:8px">⚠️ Límite casi alcanzado</p>` : ''}
+      </div>`;
     }).join('');
   }
 
+  // ──────────────────────────────────────────────
+  // MODAL TRANSACTION
+  // ──────────────────────────────────────────────
   function openTxModal() {
     document.getElementById('txModal').classList.add('open');
     setType('income');
@@ -559,7 +783,9 @@
     document.getElementById('txDesc').value = '';
   }
   function closeTxModal(e) {
-    if (e.target === document.getElementById('txModal')) document.getElementById('txModal').classList.remove('open');
+    if (e.target === document.getElementById('txModal')) {
+      document.getElementById('txModal').classList.remove('open');
+    }
   }
 
   function setType(t) {
@@ -581,11 +807,40 @@
     renderCatGrid();
   }
 
-  function renderCatGrid() {
-    document.getElementById('catGrid').innerHTML = CATEGORIES[currentType].map(c => `<div class="cat-btn ${selectedCategory === c.key ? 'selected' : ''}" onclick="selectCat('${c.key}')"><span style="font-size:22px">${c.icon}</span><span style="font-size:11px;font-weight:600">${c.label}</span></div>`).join('');
+  function catBtnHTML(c) {
+    return `<div class="cat-btn ${selectedCategory === c.key ? 'selected' : ''}" onclick="selectCat('${c.key}')">
+      <span style="font-size:22px">${c.icon}</span>
+      <span style="font-size:11px;font-weight:600;text-align:center;line-height:1.2">${c.label}</span>
+    </div>`;
   }
 
-  function selectCat(k) { selectedCategory = k; renderCatGrid(); }
+  function groupHeader(label, color) {
+    return `<div style="width:100%;display:flex;align-items:center;gap:8px;padding:4px 0 8px">
+      <span style="flex:1;height:1px;background:#E2E8F0"></span>
+      <span style="font-size:11px;font-weight:700;color:${color};letter-spacing:0.07em">${label}</span>
+      <span style="flex:1;height:1px;background:#E2E8F0"></span>
+    </div>`;
+  }
+
+  function renderCatGrid() {
+    const cats = CATEGORIES[currentType];
+    if (currentType === 'income') {
+      document.getElementById('catGrid').innerHTML = cats.map(catBtnHTML).join('');
+      return;
+    }
+    const fixed = cats.filter(c => c.group === 'fixed');
+    const other = cats.filter(c => !c.group);
+    document.getElementById('catGrid').innerHTML =
+      groupHeader('GASTOS FIJOS', '#6C63FF') +
+      fixed.map(catBtnHTML).join('') +
+      groupHeader('OTROS GASTOS', '#94A3B8') +
+      other.map(catBtnHTML).join('');
+  }
+
+  function selectCat(k) {
+    selectedCategory = k;
+    renderCatGrid();
+  }
 
   async function submitTransaction() {
     const amount = parseFloat(document.getElementById('txAmount').value);
@@ -594,34 +849,67 @@
     if (!amount || amount <= 0) return shakeInput('txAmount');
     if (!desc)   return shakeInput('txDesc');
     if (!selectedCategory) { alert('Selecciona una categoría'); return; }
+
     const catObj = CATEGORIES[currentType].find(c => c.key === selectedCategory);
-    const tx = { id: Date.now(), type: currentType, profile: currentProfile, cat: catObj.label, icon: catObj.icon, desc, amount, date, ai: false };
-    if (currentType === 'expense') { pendingTx = tx; analyzeExpense(tx); }
-    else { saveTx(tx); document.getElementById('txModal').classList.remove('open'); }
+    const tx = {
+      id: Date.now(), type: currentType, profile: currentProfile,
+      cat: catObj.label, icon: catObj.icon, desc, amount, date, ai: false
+    };
+
+    if (currentType === 'expense') {
+      pendingTx = tx;
+      analyzeExpense(tx);
+    } else {
+      saveTx(tx);
+      document.getElementById('txModal').classList.remove('open');
+    }
   }
 
   function shakeInput(id) {
     const el = document.getElementById(id);
     el.style.borderColor = '#F43F5E';
-    setTimeout(() => { el.style.borderColor = ''; }, 600);
+    el.style.animation = 'shake 0.3s ease';
+    setTimeout(() => { el.style.borderColor = ''; el.style.animation = ''; }, 600);
   }
 
+  // ──────────────────────────────────────────────
+  // AI ANALYSIS
+  // ──────────────────────────────────────────────
   async function analyzeExpense(tx) {
     document.getElementById('txModal').classList.remove('open');
-    document.getElementById('aiAlertBox').style.display = 'none';
+    const box = document.getElementById('aiAlertBox');
+    box.style.display = 'none';
+
+    // Get context
     const monthExpenses = transactions.filter(t => t.type === 'expense' && t.profile === currentProfile);
     const catTotal = monthExpenses.filter(t => t.cat === tx.cat).reduce((s,t) => s + t.amount, 0);
     const budget   = BUDGETS.find(b => b.cat.toLowerCase() === tx.cat.toLowerCase());
     const budgetLimit = budget ? budget.limit : null;
+
     try {
       const resp = await fetch('/analizar-gasto', {
-        method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ gasto: tx, contexto: { total_mes_categoria: catTotal + tx.amount, presupuesto_limite: budgetLimit, historial_categoria: monthExpenses.filter(t => t.cat === tx.cat).map(t => ({ desc: t.desc, amount: t.amount, date: t.date })) } })
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          gasto: tx,
+          contexto: {
+            total_mes_categoria: catTotal + tx.amount,
+            presupuesto_limite: budgetLimit,
+            historial_categoria: monthExpenses.filter(t => t.cat === tx.cat).map(t => ({ desc: t.desc, amount: t.amount, date: t.date }))
+          }
+        })
       });
       const data = await resp.json();
-      if (data.alerta) { tx.ai = true; showAiAlert(data.mensaje, data.nivel); }
-      else { saveTx(tx); pendingTx = null; showToast('✅ Gasto registrado correctamente'); }
+      if (data.alerta) {
+        tx.ai = true;
+        showAiAlert(data.mensaje, data.nivel);
+      } else {
+        saveTx(tx);
+        pendingTx = null;
+        showToast('✅ Gasto registrado correctamente');
+      }
     } catch(e) {
+      // Offline / dev mode — apply local heuristic
       localHeuristic(tx, catTotal, budgetLimit);
     }
   }
@@ -629,8 +917,15 @@
   function localHeuristic(tx, catTotal, budgetLimit) {
     if (budgetLimit && (catTotal + tx.amount) / budgetLimit > 0.85) {
       tx.ai = true;
-      showAiAlert(`Este gasto lleva la categoría <strong>${tx.cat}</strong> al ${Math.round(((catTotal + tx.amount)/budgetLimit)*100)}% del presupuesto mensual ($${budgetLimit}). Quedan $${(budgetLimit - catTotal - tx.amount).toFixed(2)} disponibles.`, 'warning');
-    } else { saveTx(tx); pendingTx = null; showToast('✅ Gasto registrado'); }
+      showAiAlert(
+        `Este gasto lleva la categoría <strong>${tx.cat}</strong> al ${Math.round(((catTotal + tx.amount)/budgetLimit)*100)}% del presupuesto mensual ($${budgetLimit}). Quedan $${(budgetLimit - catTotal - tx.amount).toFixed(2)} disponibles. Te recomiendo evaluar si es necesario en este momento.`,
+        'warning'
+      );
+    } else {
+      saveTx(tx);
+      pendingTx = null;
+      showToast('✅ Gasto registrado');
+    }
   }
 
   function showAiAlert(msg, nivel) {
@@ -660,20 +955,28 @@
     renderFullTx();
   }
 
+  // ──────────────────────────────────────────────
+  // TOAST
+  // ──────────────────────────────────────────────
   function showToast(msg) {
     const t = document.createElement('div');
     t.innerHTML = msg;
-    t.style.cssText = `position:fixed;bottom:100px;right:30px;background:#1E293B;color:white;padding:14px 20px;border-radius:14px;font-size:14px;font-weight:500;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.2)`;
+    t.style.cssText = `position:fixed;bottom:100px;right:30px;background:#1E293B;color:white;
+      padding:14px 20px;border-radius:14px;font-size:14px;font-weight:500;
+      z-index:999;animation:slideUp 0.3s ease;box-shadow:0 8px 24px rgba(0,0,0,0.2)`;
     document.body.appendChild(t);
     setTimeout(() => t.remove(), 3000);
   }
 
+  // ──────────────────────────────────────────────
+  // AI CHAT (mock while backend up)
+  // ──────────────────────────────────────────────
   const AI_RESPONSES = [
-    'Basándome en tu historial, el mayor área de optimización es <strong>Ocio</strong>. Llevan $700 de $750 este mes.',
-    'El patrón de ahorro familiar este mes es <strong>59%</strong>, por encima de la meta recomendada del 20%. ¡Excelente!',
-    'Detecté que los gastos en transporte aumentaron un 15% respecto al mes pasado.',
-    'Para julio, sugiero reducir ocio a $600 para reforzar el ahorro familiar.',
-    'La categoría <strong>Salud</strong> está muy por debajo del presupuesto. Asegúrense de tener fondo de emergencia.',
+    'Basándome en tu historial, el mayor área de optimización es <strong>Ocio</strong>. Llevan $700 de $750 este mes. Te sugiero reducir salidas a restaurantes la próxima semana.',
+    'El patrón de ahorro familiar este mes es <strong>59%</strong>, por encima de la meta recomendada del 20%. ¡Excelente trabajo!',
+    'Detecté que los gastos en transporte aumentaron un 15% respecto al mes pasado. ¿Consideran combinar viajes o usar transporte público algunos días?',
+    'Para julio, sugiero un presupuesto de $800 en alimentación (↑$50) dado el historial, y reducir ocio a $600 para reforzar el ahorro.',
+    'La categoría <strong>Salud</strong> está muy por debajo del presupuesto ($85 de $300). Es buena señal, pero asegúrense de tener fondo de emergencia médica.',
   ];
   let aiIdx = 0;
 
@@ -682,40 +985,139 @@
     const msg = input.value.trim();
     if (!msg) return;
     input.value = '';
+
     const chat = document.getElementById('chatMessages');
-    chat.innerHTML += `<div class="flex gap-3 justify-end"><div class="chat-bubble-user">${msg}</div><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:#E2E8F0">👤</div></div>`;
+
+    // User bubble
+    chat.innerHTML += `
+      <div class="flex gap-3 justify-end">
+        <div class="chat-bubble-user">${msg}</div>
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:#E2E8F0">👤</div>
+      </div>`;
+
+    // Typing indicator
     const tid = 'typing-' + Date.now();
-    chat.innerHTML += `<div id="${tid}" class="flex gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div><div class="chat-bubble-ai pulse" style="color:#94A3B8">Analizando... ✨</div></div>`;
+    chat.innerHTML += `
+      <div id="${tid}" class="flex gap-3">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
+        <div class="chat-bubble-ai pulse" style="color:#94A3B8">Analizando... ✨</div>
+      </div>`;
     chat.scrollTop = chat.scrollHeight;
+
     try {
-      const resp = await fetch('/chat-asesor', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mensaje: msg, perfil: currentProfile, transactions }) });
+      const resp = await fetch('/chat-asesor', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ mensaje: msg, perfil: currentProfile, transactions })
+      });
       const data = await resp.json();
       document.getElementById(tid).remove();
-      chat.innerHTML += `<div class="flex gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div><div class="chat-bubble-ai">${data.respuesta}</div></div>`;
+      chat.innerHTML += `
+        <div class="flex gap-3">
+          <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
+          <div class="chat-bubble-ai">${data.respuesta}</div>
+        </div>`;
     } catch(e) {
+      // Fallback
       setTimeout(() => {
-        document.getElementById(tid)?.remove();
-        chat.innerHTML += `<div class="flex gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div><div class="chat-bubble-ai">${AI_RESPONSES[aiIdx++ % AI_RESPONSES.length]}</div></div>`;
+        document.getElementById(tid).remove();
+        chat.innerHTML += `
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
+            <div class="chat-bubble-ai">${AI_RESPONSES[aiIdx++ % AI_RESPONSES.length]}</div>
+          </div>`;
         chat.scrollTop = chat.scrollHeight;
       }, 1200);
     }
     chat.scrollTop = chat.scrollHeight;
   }
 
+  // ──────────────────────────────────────────────
+  // CHARTS
+  // ──────────────────────────────────────────────
   function initCharts() {
-    new Chart(document.getElementById('donutChart'), { type: 'doughnut', data: { labels: ['Alimentación','Transporte','Servicios','Ocio','Salud','Otros'], datasets: [{ data: [850, 420, 680, 700, 85, 200], backgroundColor: ['#6C63FF','#10B981','#F59E0B','#F43F5E','#3B82F6','#8B5CF6'], borderWidth: 0, hoverOffset: 6 }] }, options: { cutout:'72%', plugins:{ legend:{display:false} }, responsive:true, maintainAspectRatio:false } });
-    new Chart(document.getElementById('barChart'), { type: 'bar', data: { labels: ['Enero','Febrero','Marzo','Abril','Mayo','Junio'], datasets: [ { label:'Ingresos', data:[5800,6000,5500,6200,6000,6500], backgroundColor:'rgba(16,185,129,0.8)', borderRadius:8 }, { label:'Gastos', data:[3200,2900,3100,2700,2770,2650], backgroundColor:'rgba(244,63,94,0.8)', borderRadius:8 } ] }, options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ usePointStyle:true, font:{size:12} } } }, scales:{ x:{ grid:{display:false}, border:{display:false} }, y:{ grid:{color:'#F1F5F9'}, border:{display:false}, ticks:{callback:v=>'$'+v.toLocaleString()} } } } });
+    // Donut
+    new Chart(document.getElementById('donutChart'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Alimentación','Transporte','Servicios','Ocio','Salud','Otros'],
+        datasets: [{
+          data: [850, 420, 680, 700, 85, 200],
+          backgroundColor: ['#6C63FF','#10B981','#F59E0B','#F43F5E','#3B82F6','#8B5CF6'],
+          borderWidth: 0, hoverOffset: 6
+        }]
+      },
+      options: { cutout:'72%', plugins:{ legend:{display:false} }, responsive:true, maintainAspectRatio:false }
+    });
+
+    // Bar
+    new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Enero','Febrero','Marzo','Abril','Mayo','Junio'],
+        datasets: [
+          { label:'Ingresos', data:[5800,6000,5500,6200,6000,6500], backgroundColor:'rgba(16,185,129,0.8)', borderRadius:8 },
+          { label:'Gastos',   data:[3200,2900,3100,2700,2770,2650], backgroundColor:'rgba(244,63,94,0.8)',  borderRadius:8 }
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ labels:{ usePointStyle:true, font:{size:12} } } },
+        scales:{
+          x:{ grid:{display:false}, border:{display:false} },
+          y:{ grid:{color:'#F1F5F9'}, border:{display:false}, ticks:{callback:v=>'$'+v.toLocaleString()} }
+        }
+      }
+    });
   }
 
   function initReportCharts() {
     if (window._reportsDone) return;
     window._reportsDone = true;
-    new Chart(document.getElementById('savingsChart'), { type:'line', data:{ labels:['Ene','Feb','Mar','Abr','May','Jun'], datasets:[{ label:'Ahorro mensual', data:[2600,3100,2400,3500,3230,3850], borderColor:'#6C63FF', backgroundColor:'rgba(108,99,255,0.1)', fill:true, tension:0.4, pointBackgroundColor:'#6C63FF', pointRadius:5 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},border:{display:false}}, y:{grid:{color:'#F1F5F9'},border:{display:false}} } } });
-    new Chart(document.getElementById('pieChart'), { type:'pie', data:{ labels:['Alimentación','Transporte','Servicios','Ocio','Salud','Hogar'], datasets:[{ data:[32,16,26,26,3,7], backgroundColor:['#6C63FF','#10B981','#F59E0B','#F43F5E','#3B82F6','#8B5CF6'], borderWidth:0 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right', labels:{usePointStyle:true,font:{size:12}} } } } });
-    new Chart(document.getElementById('categoryChart'), { type:'bar', data:{ labels:['Alimentación','Transporte','Servicios','Ocio','Salud','Educación'], datasets:[ { label:'Presupuesto', data:[1000,500,700,750,300,400], backgroundColor:'rgba(203,213,225,0.5)', borderRadius:6 }, { label:'Gastado', data:[850,420,680,700,85,180], backgroundColor:'rgba(108,99,255,0.8)', borderRadius:6 } ] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{usePointStyle:true,font:{size:12}} } }, scales:{ x:{grid:{display:false},border:{display:false}}, y:{grid:{color:'#F1F5F9'},border:{display:false}} } } });
+
+    new Chart(document.getElementById('savingsChart'), {
+      type:'line',
+      data:{
+        labels:['Ene','Feb','Mar','Abr','May','Jun'],
+        datasets:[{
+          label:'Ahorro mensual', data:[2600,3100,2400,3500,3230,3850],
+          borderColor:'#6C63FF', backgroundColor:'rgba(108,99,255,0.1)',
+          fill:true, tension:0.4, pointBackgroundColor:'#6C63FF', pointRadius:5
+        }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+        scales:{ x:{grid:{display:false},border:{display:false}}, y:{grid:{color:'#F1F5F9'},border:{display:false}} } }
+    });
+
+    new Chart(document.getElementById('pieChart'), {
+      type:'pie',
+      data:{
+        labels:['Alimentación','Transporte','Servicios','Ocio','Salud','Hogar'],
+        datasets:[{ data:[32,16,26,26,3,7],
+          backgroundColor:['#6C63FF','#10B981','#F59E0B','#F43F5E','#3B82F6','#8B5CF6'],
+          borderWidth:0 }]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ position:'right', labels:{usePointStyle:true,font:{size:12}} } } }
+    });
+
+    new Chart(document.getElementById('categoryChart'), {
+      type:'bar',
+      data:{
+        labels:['Alimentación','Transporte','Servicios','Ocio','Salud','Educación'],
+        datasets:[
+          { label:'Presupuesto', data:[1000,500,700,750,300,400], backgroundColor:'rgba(203,213,225,0.5)', borderRadius:6 },
+          { label:'Gastado',     data:[850,420,680,700,85,180],  backgroundColor:'rgba(108,99,255,0.8)',  borderRadius:6 }
+        ]
+      },
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{ labels:{usePointStyle:true,font:{size:12}} } },
+        scales:{ x:{grid:{display:false},border:{display:false}}, y:{grid:{color:'#F1F5F9'},border:{display:false}} } }
+    });
   }
 
-  function openBudgetModal() { showToast('Función de presupuestos personalizados próximamente 🎯'); }
+  function openBudgetModal() {
+    showToast('Función de presupuestos personalizados próximamente 🎯');
+  }
   </script>
 </body>
 </html>
