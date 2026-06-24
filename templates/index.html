@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Economía Familiar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    * { font-family: 'Inter', sans-serif; }
+
+    :root {
+      --sidebar-bg: #0F0C29;
+      --primary: #6C63FF;
+      --primary-light: #8B85FF;
+      --success: #10B981;
+      --danger: #F43F5E;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --bg: #F0F4FF;
+      --card: #FFFFFF;
+      --text: #1E293B;
+      --muted: #94A3B8;
+    }
+
+    body { background: var(--bg); color: var(--text); }
+
+    .sidebar {
+      background: linear-gradient(180deg, #0F0C29 0%, #302B63 50%, #24243E 100%);
+      width: 260px; min-height: 100vh; position: fixed; left: 0; top: 0; z-index: 50;
+      transition: transform 0.3s ease;
+    }
+    .sidebar-link {
+      display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+      border-radius: 12px; margin: 2px 12px; cursor: pointer;
+      color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500;
+      transition: all 0.2s ease;
+    }
+    .sidebar-link:hover { background: rgba(255,255,255,0.1); color: white; }
+    .sidebar-link.active {
+      background: linear-gradient(135deg, #6C63FF, #9B8FFF);
+      color: white; box-shadow: 0 4px 15px rgba(108,99,255,0.4);
+    }
+    .sidebar-link .icon { font-size: 20px; width: 24px; text-align: center; }
+
+    .card {
+      background: white; border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+
+    .balance-card {
+      background: linear-gradient(135deg, #6C63FF 0%, #9B5FFF 50%, #C084FC 100%);
+      border-radius: 24px; color: white;
+      box-shadow: 0 12px 40px rgba(108,99,255,0.4);
+    }
+
+    .stat-income { background: linear-gradient(135deg, #10B981, #34D399); }
+    .stat-expense { background: linear-gradient(135deg, #F43F5E, #FB7185); }
+    .stat-savings { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+    .stat-budget { background: linear-gradient(135deg, #F59E0B, #FCD34D); }
+
+    .progress-bar { height: 8px; border-radius: 100px; background: #E2E8F0; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 100px; transition: width 0.5s ease; }
+
+    .tx-item {
+      display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+      border-radius: 14px; transition: background 0.15s ease; cursor: pointer;
+    }
+    .tx-item:hover { background: #F8FAFF; }
+    .tx-icon {
+      width: 44px; height: 44px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .ai-alert {
+      background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+      border: 2px solid #F59E0B; border-radius: 16px; padding: 16px;
+      animation: slideDown 0.4s ease;
+    }
+    .ai-alert-danger {
+      background: linear-gradient(135deg, #FEE2E2, #FECACA);
+      border-color: #F43F5E;
+    }
+
+    .fab {
+      position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+      border-radius: 50%; background: linear-gradient(135deg, #2563EB, #3B82F6);
+      box-shadow: 0 8px 24px rgba(37,99,235,0.5);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 28px; color: white;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      z-index: 100;
+    }
+    .fab:hover { transform: scale(1.1); box-shadow: 0 12px 32px rgba(37,99,235,0.6); }
+
+    .modal-bg {
+      position: fixed; inset: 0; background: rgba(15,12,41,0.6);
+      backdrop-filter: blur(4px); z-index: 200; display: none;
+      align-items: center; justify-content: center;
+    }
+    .modal-bg.open { display: flex; animation: fadeIn 0.2s ease; }
+    .modal {
+      background: white; border-radius: 28px; padding: 32px;
+      width: 90%; max-width: 480px; box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+      animation: slideUp 0.3s ease;
+    }
+
+    .input-field {
+      width: 100%; border: 2px solid #E2E8F0; border-radius: 12px;
+      padding: 12px 16px; font-size: 15px; transition: border-color 0.2s ease;
+      outline: none; background: #F8FAFF;
+    }
+    .input-field:focus { border-color: #6C63FF; background: white; }
+
+    .tab-btn {
+      padding: 8px 20px; border-radius: 10px; font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s ease; color: var(--muted);
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #6C63FF, #9B5FFF);
+      color: white; box-shadow: 0 4px 12px rgba(108,99,255,0.3);
+    }
+
+    .profile-badge {
+      padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s ease; border: 2px solid transparent;
+    }
+    .profile-badge.active-p1 { background: #EDE9FF; color: #6C63FF; border-color: #6C63FF; }
+    .profile-badge.active-p2 { background: #FFF0F6; color: #EC4899; border-color: #EC4899; }
+    .profile-badge.active-family { background: #F0FDF4; color: #10B981; border-color: #10B981; }
+    .profile-badge.inactive { background: #F1F5F9; color: #94A3B8; }
+
+    .view { display: none; }
+    .view.active { display: block; animation: fadeIn 0.3s ease; }
+
+    .chat-bubble-ai {
+      background: linear-gradient(135deg, #EDE9FF, #E0DBFF);
+      border-radius: 18px 18px 18px 4px; padding: 14px 18px; max-width: 85%;
+      font-size: 14px; line-height: 1.6;
+    }
+    .chat-bubble-user {
+      background: linear-gradient(135deg, #6C63FF, #9B5FFF);
+      color: white; border-radius: 18px 18px 4px 18px;
+      padding: 14px 18px; max-width: 85%; font-size: 14px;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 100px; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes slideDown { from { transform: translateY(-10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .pulse { animation: pulse 2s infinite; }
+
+    @media (max-width: 768px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .main-content { margin-left: 0 !important; }
+    }
+
+    .notif-dot {
+      width: 8px; height: 8px; border-radius: 50%; background: #F43F5E;
+      position: absolute; top: -2px; right: -2px;
+    }
+
+    .amount-input {
+      font-size: 42px; font-weight: 700; border: none; outline: none;
+      background: transparent; color: var(--text); text-align: center; width: 100%;
+    }
+    .amount-input::placeholder { color: #CBD5E1; }
+
+    .cat-btn {
+      padding: 8px 14px; border-radius: 10px; font-size: 13px;
+      cursor: pointer; border: 2px solid #E2E8F0; background: white;
+      transition: all 0.2s ease; display: flex; flex-direction: column;
+      align-items: center; gap: 4px; min-width: 72px;
+    }
+    .cat-btn:hover { border-color: #6C63FF; background: #EDE9FF; }
+    .cat-btn.selected { border-color: #6C63FF; background: #EDE9FF; color: #6C63FF; }
+
+    .badge {
+      font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px;
+    }
+    .badge-ai { background: #FEF3C7; color: #92400E; }
+    .badge-ok { background: #D1FAE5; color: #065F46; }
+  </style>
+</head>
+<body class="overflow-x-hidden">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="p-6 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-16 flex items-center justify-center text-2xl" style="background:linear-gradient(135deg,#6C63FF,#C084FC);border-radius:12px">🏠</div>
+        <div>
+          <p class="text-white font-bold text-base leading-tight">Economía</p>
+          <p style="color:rgba(255,255,255,0.5);font-size:12px">Familiar</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="p-4 flex flex-col gap-1 mt-2">
+      <div class="sidebar-link active" onclick="showView('dashboard')">
+        <span class="icon">📊</span>
+        <span>Dashboard</span>
+      </div>
+      <div class="sidebar-link" onclick="showView('transactions')">
+        <span class="icon">💳</span>
+        <span>Transacciones</span>
+      </div>
+      <div class="sidebar-link" onclick="showView('budgets')">
+        <span class="icon">🎯</span>
+        <span>Presupuestos</span>
+      </div>
+      <div class="sidebar-link" onclick="showView('reports')">
+        <span class="icon">📈</span>
+        <span>Reportes</span>
+      </div>
+      <div class="sidebar-link" onclick="showView('advisor')">
+        <span class="icon">🤖</span>
+        <span>Asesor IA</span>
+        <span class="ml-auto text-xs px-2 py-0.5 rounded-full" style="background:rgba(243,63,94,0.3);color:#FB7185">2</span>
+      </div>
+    </nav>
+
+    <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-white/10">
+      <p style="color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;letter-spacing:0.05em;padding:0 8px 8px">PERFIL ACTIVO</p>
+      <div class="flex flex-col gap-2">
+        <div class="sidebar-link py-2" id="sb-p1" onclick="switchProfile('p1')" style="background:rgba(108,99,255,0.25);color:white">
+          <span>👤</span>
+          <span>Persona 1</span>
+          <span class="ml-auto w-2 h-2 rounded-full bg-green-400"></span>
+        </div>
+        <div class="sidebar-link py-2" id="sb-p2" onclick="switchProfile('p2')" style="color:rgba(255,255,255,0.5)">
+          <span>👤</span>
+          <span>Persona 2</span>
+        </div>
+        <div class="sidebar-link py-2" id="sb-family" onclick="switchProfile('family')" style="color:rgba(255,255,255,0.5)">
+          <span>👨‍👩‍👧</span>
+          <span>Vista Familiar</span>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main-content" style="margin-left:260px;min-height:100vh;padding:24px 28px;padding-bottom:100px" id="mainContent">
+
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <p style="color:var(--muted);font-size:13px;font-weight:500" id="greeting">Buenos días ☀️</p>
+        <h1 class="text-2xl font-bold mt-0.5" id="profileTitle">Mi Economía</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="card flex gap-1 p-1.5 flex-row">
+          <div class="profile-badge active-p1" id="tab-p1" onclick="switchProfile('p1')">👤 Persona 1</div>
+          <div class="profile-badge inactive" id="tab-p2" onclick="switchProfile('p2')">👤 Persona 2</div>
+          <div class="profile-badge inactive" id="tab-family" onclick="switchProfile('family')">👨‍👩‍👧 Familia</div>
+        </div>
+        <div class="card px-4 py-2.5 flex items-center gap-2">
+          <span style="font-size:18px">📅</span>
+          <span class="font-semibold text-sm" id="currentMonth">Junio 2026</span>
+        </div>
+        <div class="card w-10 h-10 flex items-center justify-center cursor-pointer relative" onclick="showView('advisor')">
+          <span style="font-size:18px">🔔</span>
+          <div class="notif-dot"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="aiAlertBox" class="ai-alert mb-6" style="display:none">
+      <div class="flex gap-3">
+        <span style="font-size:28px">🤖</span>
+        <div class="flex-1">
+          <p class="font-bold text-amber-800 mb-1">Alerta del Asesor IA</p>
+          <p class="text-amber-700 text-sm leading-relaxed" id="aiAlertText"></p>
+          <div class="flex gap-3 mt-3">
+            <button onclick="confirmExpense()" class="px-4 py-2 rounded-10 text-sm font-semibold" style="background:#F59E0B;color:white;border-radius:10px">Confirmar de todas formas</button>
+            <button onclick="cancelExpense()" class="px-4 py-2 rounded-10 text-sm font-semibold" style="background:white;color:#92400E;border-radius:10px;border:2px solid #F59E0B">Cancelar gasto</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-dashboard" class="view active">
+      <div class="balance-card p-8 mb-6 relative overflow-hidden">
+        <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.07)"></div>
+        <div style="position:absolute;bottom:-60px;right:40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.05)"></div>
+        <p style="color:rgba(255,255,255,0.7);font-size:13px;font-weight:500;letter-spacing:0.05em">BALANCE DISPONIBLE</p>
+        <p class="text-5xl font-black mt-2 mb-1" id="balanceMain">$3,850.00</p>
+        <p style="color:rgba(255,255,255,0.6);font-size:13px">↑ 12% respecto al mes pasado</p>
+        <div class="flex gap-6 mt-6">
+          <div><p style="color:rgba(255,255,255,0.6);font-size:12px">Ingresos</p><p class="font-bold text-lg">$6,500.00</p></div>
+          <div style="width:1px;background:rgba(255,255,255,0.2)"></div>
+          <div><p style="color:rgba(255,255,255,0.6);font-size:12px">Gastos</p><p class="font-bold text-lg">$2,650.00</p></div>
+          <div style="width:1px;background:rgba(255,255,255,0.2)"></div>
+          <div><p style="color:rgba(255,255,255,0.6);font-size:12px">Ahorros</p><p class="font-bold text-lg" id="savingsDisplay">$3,850.00</p></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-4 gap-4 mb-6">
+        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-income" style="border-radius:12px"><span style="color:white;font-size:18px">💰</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">INGRESOS</p><p class="text-xl font-bold mt-0.5" style="color:#10B981">$6,500</p><p style="color:var(--muted);font-size:12px" class="mt-1">+$500 vs mayo</p></div>
+        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-expense" style="border-radius:12px"><span style="color:white;font-size:18px">💸</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">GASTOS</p><p class="text-xl font-bold mt-0.5" style="color:#F43F5E">$2,650</p><p style="color:var(--muted);font-size:12px" class="mt-1">-$120 vs mayo</p></div>
+        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-savings" style="border-radius:12px"><span style="color:white;font-size:18px">🏦</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">AHORROS</p><p class="text-xl font-bold mt-0.5" style="color:#3B82F6">$3,850</p><p style="color:var(--muted);font-size:12px" class="mt-1">59% del ingreso</p></div>
+        <div class="card p-5"><div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3 stat-budget" style="border-radius:12px"><span style="color:white;font-size:18px">🎯</span></div><p style="color:var(--muted);font-size:12px;font-weight:600">PRESUPUESTO</p><p class="text-xl font-bold mt-0.5" style="color:#F59E0B">72%</p><p style="color:var(--muted);font-size:12px" class="mt-1">Usado este mes</p></div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="card p-6">
+          <h3 class="font-bold mb-4">Gastos por categoría</h3>
+          <div style="position:relative;height:200px"><canvas id="donutChart"></canvas></div>
+          <div class="flex flex-col gap-2 mt-4">
+            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#6C63FF;display:inline-block"></span>Alimentación</div><span class="font-semibold">$850</span></div>
+            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#10B981;display:inline-block"></span>Transporte</div><span class="font-semibold">$420</span></div>
+            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#F59E0B;display:inline-block"></span>Servicios</div><span class="font-semibold">$680</span></div>
+            <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><span style="width:10px;height:10px;border-radius:3px;background:#F43F5E;display:inline-block"></span>Ocio</div><span class="font-semibold">$700</span></div>
+          </div>
+        </div>
+        <div class="card p-6 col-span-2">
+          <h3 class="font-bold mb-4">Ingresos vs Gastos — últimos 6 meses</h3>
+          <div style="height:240px"><canvas id="barChart"></canvas></div>
+        </div>
+      </div>
+
+      <div class="card p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-bold">Transacciones recientes</h3>
+          <button onclick="showView('transactions')" style="color:var(--primary);font-size:13px;font-weight:600;cursor:pointer">Ver todas →</button>
+        </div>
+        <div id="recentTxList"></div>
+      </div>
+    </div>
+
+    <div id="view-transactions" class="view">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold">Historial de Transacciones</h2>
+        <div class="flex gap-2">
+          <select class="input-field" style="width:auto;padding:8px 14px"><option>Junio 2026</option><option>Mayo 2026</option><option>Abril 2026</option></select>
+          <select class="input-field" style="width:auto;padding:8px 14px"><option>Todos los tipos</option><option>Ingresos</option><option>Gastos</option></select>
+        </div>
+      </div>
+      <div class="card p-4" id="fullTxList"></div>
+    </div>
+
+    <div id="view-budgets" class="view">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-xl font-bold">Presupuestos — Junio 2026</h2>
+        <button onclick="openBudgetModal()" class="px-5 py-2.5 text-sm font-semibold text-white rounded-xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:12px">+ Nuevo presupuesto</button>
+      </div>
+      <div class="grid grid-cols-2 gap-4" id="budgetList"></div>
+    </div>
+
+    <div id="view-reports" class="view">
+      <h2 class="text-xl font-bold mb-6">Reportes y Análisis</h2>
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <div class="card p-6"><h3 class="font-bold mb-4">Evolución del ahorro</h3><div style="height:220px"><canvas id="savingsChart"></canvas></div></div>
+        <div class="card p-6"><h3 class="font-bold mb-4">Distribución de gastos</h3><div style="height:220px"><canvas id="pieChart"></canvas></div></div>
+      </div>
+      <div class="card p-6"><h3 class="font-bold mb-4">Comparación mensual por categoría</h3><div style="height:260px"><canvas id="categoryChart"></canvas></div></div>
+    </div>
+
+    <div id="view-advisor" class="view">
+      <h2 class="text-xl font-bold mb-6">Asesor de Inteligencia Artificial</h2>
+      <div class="card p-5 mb-5" style="border-left: 4px solid #F43F5E">
+        <div class="flex items-start gap-3"><span style="font-size:24px">🚨</span><div><p class="font-bold text-sm" style="color:#F43F5E">ALERTA ACTIVA — hace 2 horas</p><p class="text-sm mt-1 leading-relaxed" style="color:var(--text)">El gasto en <strong>Ocio / Entretenimiento</strong> alcanzó el <strong>94% del presupuesto mensual</strong>. Con 8 días restantes del mes, hay riesgo de exceder el límite de $750. Se recomienda pausar gastos en esta categoría.</p></div></div>
+      </div>
+      <div class="card p-5 mb-5" style="border-left: 4px solid #F59E0B">
+        <div class="flex items-start gap-3"><span style="font-size:24px">⚠️</span><div><p class="font-bold text-sm" style="color:#F59E0B">RECOMENDACIÓN — hace 5 horas</p><p class="text-sm mt-1 leading-relaxed" style="color:var(--text)">Se detectó un gasto de <strong>$85 en restaurantes</strong> siendo el tercer gasto de este tipo en la semana. El promedio histórico es de 1 vez por semana. Considera preparar comida en casa para optimizar recursos.</p></div></div>
+      </div>
+      <div class="card p-6">
+        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center text-xl" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
+          <div><p class="font-bold">Asesor Financiero IA</p><p style="color:#10B981;font-size:12px;font-weight:600">● En línea</p></div>
+        </div>
+        <div id="chatMessages" style="height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;padding-bottom:4px">
+          <div class="flex gap-3">
+            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div>
+            <div class="chat-bubble-ai">Hola 👋 Soy tu asesor financiero. Analizo tus gastos en tiempo real y te aviso cuando detecto algo que puede afectar la economía familiar.<br><br>Este mes van bien: el ahorro está al <strong>59%</strong>. Hay 2 alertas activas que deberías revisar. ¿En qué te ayudo?</div>
+          </div>
+        </div>
+        <div class="flex gap-3 mt-4 pt-4" style="border-top:2px solid #F1F5F9">
+          <input type="text" id="chatInput" class="input-field flex-1" placeholder="Pregunta al asesor... (Ej: ¿Cómo podemos ahorrar más?)" onkeydown="if(event.key==='Enter')sendChat()" />
+          <button onclick="sendChat()" class="px-5 py-3 text-white font-semibold rounded-xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:12px;white-space:nowrap">Enviar ✨</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="fab" onclick="openTxModal()" title="Nueva transacción">+</div>
+
+  <div class="modal-bg" id="txModal" onclick="closeTxModal(event)">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="flex gap-2 mb-6 p-1.5 rounded-2xl" style="background:#F1F5F9">
+        <button id="typeIncome" class="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all" onclick="setType('income')" style="background:linear-gradient(135deg,#10B981,#34D399);color:white">↑ Ingreso</button>
+        <button id="typeExpense" class="flex-1 py-2.5 rounded-xl font-semibold text-sm transition-all" onclick="setType('expense')" style="color:#94A3B8">↓ Gasto</button>
+      </div>
+      <div class="text-center mb-6 pb-6" style="border-bottom:2px solid #F1F5F9">
+        <p style="color:var(--muted);font-size:13px;font-weight:500;margin-bottom:4px">MONTO</p>
+        <div class="flex items-center justify-center gap-1">
+          <span class="text-3xl font-bold" style="color:var(--muted)">$</span>
+          <input type="number" id="txAmount" class="amount-input" placeholder="0.00" step="0.01" style="max-width:200px" />
+        </div>
+      </div>
+      <p style="font-size:13px;font-weight:600;color:var(--muted);margin-bottom:10px">CATEGORÍA</p>
+      <div class="flex gap-2 flex-wrap mb-5" id="catGrid"></div>
+      <div class="flex flex-col gap-3 mb-6">
+        <input type="text" id="txDesc" class="input-field" placeholder="Descripción (ej: Supermercado semanal)" />
+        <input type="date" id="txDate" class="input-field" />
+      </div>
+      <button onclick="submitTransaction()" id="submitBtn" class="w-full py-4 text-white font-bold text-base rounded-2xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:16px;font-size:16px">Registrar ingreso</button>
+    </div>
+  </div>
+
+  <script>
+  let currentProfile = 'p1';
+  let currentType = 'income';
+  let selectedCategory = '';
+  let pendingTx = null;
+
+  const CATEGORIES = {
+    income:  [
+      { key:'salario',    label:'Salario',    icon:'💼' },
+      { key:'freelance',  label:'Freelance',  icon:'💻' },
+      { key:'negocio',    label:'Negocio',    icon:'🏪' },
+      { key:'inversion',  label:'Inversión',  icon:'📈' },
+      { key:'otro',       label:'Otro',       icon:'✨' },
+    ],
+    expense: [
+      { key:'alimentacion', label:'Comida',      icon:'🛒' },
+      { key:'transporte',   label:'Transporte',  icon:'🚗' },
+      { key:'servicios',    label:'Servicios',   icon:'⚡' },
+      { key:'salud',        label:'Salud',       icon:'🏥' },
+      { key:'educacion',    label:'Educación',   icon:'📚' },
+      { key:'ocio',         label:'Ocio',        icon:'🎮' },
+      { key:'ropa',         label:'Ropa',        icon:'👕' },
+      { key:'hogar',        label:'Hogar',       icon:'🏠' },
+      { key:'otro',         label:'Otro',        icon:'📦' },
+    ]
+  };
+
+  const BUDGETS = [
+    { cat:'Alimentación', icon:'🛒', limit:1000, spent:850,  color:'#6C63FF' },
+    { cat:'Transporte',   icon:'🚗', limit:500,  spent:420,  color:'#10B981' },
+    { cat:'Servicios',    icon:'⚡', limit:700,  spent:680,  color:'#F59E0B' },
+    { cat:'Ocio',         icon:'🎮', limit:750,  spent:700,  color:'#F43F5E' },
+    { cat:'Salud',        icon:'🏥', limit:300,  spent:85,   color:'#3B82F6' },
+    { cat:'Educación',    icon:'📚', limit:400,  spent:180,  color:'#8B5CF6' },
+  ];
+
+  let transactions = JSON.parse(localStorage.getItem('txs') || '[]');
+  if (transactions.length === 0) {
+    transactions = [
+      { id:1,  type:'income',  profile:'p1',  cat:'salario',    icon:'💼', desc:'Salario junio',        amount:3500, date:'2026-06-01', ai:false },
+      { id:2,  type:'income',  profile:'p2',  cat:'salario',    icon:'💼', desc:'Salario junio',        amount:3000, date:'2026-06-01', ai:false },
+      { id:3,  type:'expense', profile:'p1',  cat:'alimentacion',icon:'🛒',desc:'Supermercado',         amount:320,  date:'2026-06-05', ai:false },
+      { id:4,  type:'expense', profile:'p1',  cat:'ocio',       icon:'🎮', desc:'Netflix + Spotify',    amount:45,   date:'2026-06-08', ai:false },
+      { id:5,  type:'expense', profile:'p2',  cat:'transporte', icon:'🚗', desc:'Gasolina semanal',     amount:120,  date:'2026-06-10', ai:false },
+      { id:6,  type:'expense', profile:'p1',  cat:'ocio',       icon:'🎮', desc:'Cena restaurante',     amount:85,   date:'2026-06-14', ai:true  },
+      { id:7,  type:'expense', profile:'p2',  cat:'ropa',       icon:'👕', desc:'Ropa verano',          amount:210,  date:'2026-06-16', ai:true  },
+      { id:8,  type:'expense', profile:'p1',  cat:'salud',      icon:'🏥', desc:'Farmacia',             amount:45,   date:'2026-06-18', ai:false },
+      { id:9,  type:'income',  profile:'p1',  cat:'freelance',  icon:'💻', desc:'Proyecto diseño web',  amount:800,  date:'2026-06-20', ai:false },
+      { id:10, type:'expense', profile:'p2',  cat:'hogar',      icon:'🏠', desc:'Electricidad',         amount:180,  date:'2026-06-22', ai:false },
+    ];
+    localStorage.setItem('txs', JSON.stringify(transactions));
+  }
+
+  window.onload = () => {
+    updateGreeting();
+    updateDate();
+    renderRecentTx();
+    renderFullTx();
+    renderBudgets();
+    initCharts();
+    setType('income');
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('txDate').value = today;
+  };
+
+  function updateGreeting() {
+    const h = new Date().getHours();
+    const g = h < 12 ? 'Buenos días ☀️' : h < 19 ? 'Buenas tardes 🌤️' : 'Buenas noches 🌙';
+    document.getElementById('greeting').textContent = g;
+  }
+
+  function updateDate() {
+    const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const d = new Date();
+    document.getElementById('currentMonth').textContent = `${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+
+  function switchProfile(p) {
+    currentProfile = p;
+    ['p1','p2','family'].forEach(x => {
+      document.getElementById(`tab-${x}`).className = 'profile-badge inactive';
+      document.getElementById(`sb-${x}`).style.background = '';
+      document.getElementById(`sb-${x}`).style.color = 'rgba(255,255,255,0.5)';
+    });
+    const cls = p === 'p1' ? 'active-p1' : p === 'p2' ? 'active-p2' : 'active-family';
+    document.getElementById(`tab-${p}`).className = `profile-badge ${cls}`;
+    document.getElementById(`sb-${p}`).style.background = 'rgba(108,99,255,0.25)';
+    document.getElementById(`sb-${p}`).style.color = 'white';
+    const titles = { p1:'Mi Economía — Persona 1', p2:'Mi Economía — Persona 2', family:'Economía Familiar' };
+    document.getElementById('profileTitle').textContent = titles[p];
+    renderRecentTx();
+    renderFullTx();
+  }
+
+  function showView(v) {
+    document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+    document.getElementById(`view-${v}`).classList.add('active');
+    document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
+    const map = { dashboard:0, transactions:1, budgets:2, reports:3, advisor:4 };
+    document.querySelectorAll('.sidebar-link')[map[v]]?.classList.add('active');
+    if (v === 'reports') initReportCharts();
+  }
+
+  function getTx() {
+    if (currentProfile === 'family') return transactions;
+    return transactions.filter(t => t.profile === currentProfile);
+  }
+
+  function txHTML(t) {
+    const isInc = t.type === 'income';
+    const color = isInc ? '#10B981' : '#F43F5E';
+    const bg    = isInc ? '#D1FAE5' : '#FEE2E2';
+    const sign  = isInc ? '+' : '-';
+    const aiBadge = t.ai ? `<span class="badge badge-ai ml-2">🤖 IA alertó</span>` : '';
+    return `<div class="tx-item"><div class="tx-icon" style="background:${bg};">${t.icon}</div><div class="flex-1"><div class="flex items-center gap-1"><p class="font-semibold text-sm">${t.desc}</p>${aiBadge}</div><p style="color:var(--muted);font-size:12px">${t.date} · ${t.cat}</p></div><p class="font-bold" style="color:${color}">${sign}$${t.amount.toFixed(2)}</p></div>`;
+  }
+
+  function renderRecentTx() {
+    const list = getTx().slice(-5).reverse();
+    document.getElementById('recentTxList').innerHTML = list.map(t => txHTML(t)).join('') || '<p style="color:var(--muted);text-align:center;padding:20px">No hay transacciones</p>';
+  }
+
+  function renderFullTx() {
+    const list = getTx().slice().reverse();
+    document.getElementById('fullTxList').innerHTML = list.map(t => txHTML(t)).join('') || '<p style="color:var(--muted);text-align:center;padding:20px">No hay transacciones</p>';
+  }
+
+  function renderBudgets() {
+    document.getElementById('budgetList').innerHTML = BUDGETS.map(b => {
+      const pct = Math.round((b.spent / b.limit) * 100);
+      const over = pct >= 90;
+      const barColor = pct >= 90 ? '#F43F5E' : pct >= 70 ? '#F59E0B' : '#10B981';
+      return `<div class="card p-6"><div class="flex items-center justify-between mb-4"><div class="flex items-center gap-3"><div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F8FAFF;border-radius:12px">${b.icon}</div><div><p class="font-semibold">${b.cat}</p><p style="color:var(--muted);font-size:12px">$${b.spent} de $${b.limit}</p></div></div><span class="font-bold text-lg" style="color:${barColor}">${pct}%</span></div><div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${barColor}"></div></div>${over ? '<p style="color:#F43F5E;font-size:12px;font-weight:600;margin-top:8px">⚠️ Límite casi alcanzado</p>' : ''}</div>`;
+    }).join('');
+  }
+
+  function openTxModal() {
+    document.getElementById('txModal').classList.add('open');
+    setType('income');
+    document.getElementById('txAmount').value = '';
+    document.getElementById('txDesc').value = '';
+  }
+  function closeTxModal(e) {
+    if (e.target === document.getElementById('txModal')) document.getElementById('txModal').classList.remove('open');
+  }
+
+  function setType(t) {
+    currentType = t;
+    selectedCategory = '';
+    const incBtn = document.getElementById('typeIncome');
+    const expBtn = document.getElementById('typeExpense');
+    if (t === 'income') {
+      incBtn.style.cssText = 'flex:1;padding:10px;border-radius:12px;font-weight:600;font-size:14px;background:linear-gradient(135deg,#10B981,#34D399);color:white';
+      expBtn.style.cssText = 'flex:1;padding:10px;border-radius:12px;font-weight:600;font-size:14px;color:#94A3B8';
+      document.getElementById('submitBtn').textContent = 'Registrar ingreso';
+      document.getElementById('submitBtn').style.background = 'linear-gradient(135deg,#10B981,#34D399)';
+    } else {
+      expBtn.style.cssText = 'flex:1;padding:10px;border-radius:12px;font-weight:600;font-size:14px;background:linear-gradient(135deg,#F43F5E,#FB7185);color:white';
+      incBtn.style.cssText = 'flex:1;padding:10px;border-radius:12px;font-weight:600;font-size:14px;color:#94A3B8';
+      document.getElementById('submitBtn').textContent = 'Registrar gasto';
+      document.getElementById('submitBtn').style.background = 'linear-gradient(135deg,#F43F5E,#FB7185)';
+    }
+    renderCatGrid();
+  }
+
+  function renderCatGrid() {
+    document.getElementById('catGrid').innerHTML = CATEGORIES[currentType].map(c => `<div class="cat-btn ${selectedCategory === c.key ? 'selected' : ''}" onclick="selectCat('${c.key}')"><span style="font-size:22px">${c.icon}</span><span style="font-size:11px;font-weight:600">${c.label}</span></div>`).join('');
+  }
+
+  function selectCat(k) { selectedCategory = k; renderCatGrid(); }
+
+  async function submitTransaction() {
+    const amount = parseFloat(document.getElementById('txAmount').value);
+    const desc   = document.getElementById('txDesc').value.trim();
+    const date   = document.getElementById('txDate').value;
+    if (!amount || amount <= 0) return shakeInput('txAmount');
+    if (!desc)   return shakeInput('txDesc');
+    if (!selectedCategory) { alert('Selecciona una categoría'); return; }
+    const catObj = CATEGORIES[currentType].find(c => c.key === selectedCategory);
+    const tx = { id: Date.now(), type: currentType, profile: currentProfile, cat: catObj.label, icon: catObj.icon, desc, amount, date, ai: false };
+    if (currentType === 'expense') { pendingTx = tx; analyzeExpense(tx); }
+    else { saveTx(tx); document.getElementById('txModal').classList.remove('open'); }
+  }
+
+  function shakeInput(id) {
+    const el = document.getElementById(id);
+    el.style.borderColor = '#F43F5E';
+    setTimeout(() => { el.style.borderColor = ''; }, 600);
+  }
+
+  async function analyzeExpense(tx) {
+    document.getElementById('txModal').classList.remove('open');
+    document.getElementById('aiAlertBox').style.display = 'none';
+    const monthExpenses = transactions.filter(t => t.type === 'expense' && t.profile === currentProfile);
+    const catTotal = monthExpenses.filter(t => t.cat === tx.cat).reduce((s,t) => s + t.amount, 0);
+    const budget   = BUDGETS.find(b => b.cat.toLowerCase() === tx.cat.toLowerCase());
+    const budgetLimit = budget ? budget.limit : null;
+    try {
+      const resp = await fetch('/analizar-gasto', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ gasto: tx, contexto: { total_mes_categoria: catTotal + tx.amount, presupuesto_limite: budgetLimit, historial_categoria: monthExpenses.filter(t => t.cat === tx.cat).map(t => ({ desc: t.desc, amount: t.amount, date: t.date })) } })
+      });
+      const data = await resp.json();
+      if (data.alerta) { tx.ai = true; showAiAlert(data.mensaje, data.nivel); }
+      else { saveTx(tx); pendingTx = null; showToast('✅ Gasto registrado correctamente'); }
+    } catch(e) {
+      localHeuristic(tx, catTotal, budgetLimit);
+    }
+  }
+
+  function localHeuristic(tx, catTotal, budgetLimit) {
+    if (budgetLimit && (catTotal + tx.amount) / budgetLimit > 0.85) {
+      tx.ai = true;
+      showAiAlert(`Este gasto lleva la categoría <strong>${tx.cat}</strong> al ${Math.round(((catTotal + tx.amount)/budgetLimit)*100)}% del presupuesto mensual ($${budgetLimit}). Quedan $${(budgetLimit - catTotal - tx.amount).toFixed(2)} disponibles.`, 'warning');
+    } else { saveTx(tx); pendingTx = null; showToast('✅ Gasto registrado'); }
+  }
+
+  function showAiAlert(msg, nivel) {
+    const box = document.getElementById('aiAlertBox');
+    document.getElementById('aiAlertText').innerHTML = msg;
+    box.className = nivel === 'danger' ? 'ai-alert ai-alert-danger mb-6' : 'ai-alert mb-6';
+    box.style.display = 'block';
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function confirmExpense() {
+    if (pendingTx) { saveTx(pendingTx); pendingTx = null; }
+    document.getElementById('aiAlertBox').style.display = 'none';
+    showToast('Gasto confirmado y registrado');
+  }
+
+  function cancelExpense() {
+    pendingTx = null;
+    document.getElementById('aiAlertBox').style.display = 'none';
+    showToast('Gasto cancelado');
+  }
+
+  function saveTx(tx) {
+    transactions.push(tx);
+    localStorage.setItem('txs', JSON.stringify(transactions));
+    renderRecentTx();
+    renderFullTx();
+  }
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    t.innerHTML = msg;
+    t.style.cssText = `position:fixed;bottom:100px;right:30px;background:#1E293B;color:white;padding:14px 20px;border-radius:14px;font-size:14px;font-weight:500;z-index:999;box-shadow:0 8px 24px rgba(0,0,0,0.2)`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  }
+
+  const AI_RESPONSES = [
+    'Basándome en tu historial, el mayor área de optimización es <strong>Ocio</strong>. Llevan $700 de $750 este mes.',
+    'El patrón de ahorro familiar este mes es <strong>59%</strong>, por encima de la meta recomendada del 20%. ¡Excelente!',
+    'Detecté que los gastos en transporte aumentaron un 15% respecto al mes pasado.',
+    'Para julio, sugiero reducir ocio a $600 para reforzar el ahorro familiar.',
+    'La categoría <strong>Salud</strong> está muy por debajo del presupuesto. Asegúrense de tener fondo de emergencia.',
+  ];
+  let aiIdx = 0;
+
+  async function sendChat() {
+    const input = document.getElementById('chatInput');
+    const msg = input.value.trim();
+    if (!msg) return;
+    input.value = '';
+    const chat = document.getElementById('chatMessages');
+    chat.innerHTML += `<div class="flex gap-3 justify-end"><div class="chat-bubble-user">${msg}</div><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:#E2E8F0">👤</div></div>`;
+    const tid = 'typing-' + Date.now();
+    chat.innerHTML += `<div id="${tid}" class="flex gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div><div class="chat-bubble-ai pulse" style="color:#94A3B8">Analizando... ✨</div></div>`;
+    chat.scrollTop = chat.scrollHeight;
+    try {
+      const resp = await fetch('/chat-asesor', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ mensaje: msg, perfil: currentProfile, transactions }) });
+      const data = await resp.json();
+      document.getElementById(tid).remove();
+      chat.innerHTML += `<div class="flex gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div><div class="chat-bubble-ai">${data.respuesta}</div></div>`;
+    } catch(e) {
+      setTimeout(() => {
+        document.getElementById(tid)?.remove();
+        chat.innerHTML += `<div class="flex gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0" style="background:linear-gradient(135deg,#6C63FF,#C084FC)">🤖</div><div class="chat-bubble-ai">${AI_RESPONSES[aiIdx++ % AI_RESPONSES.length]}</div></div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }, 1200);
+    }
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function initCharts() {
+    new Chart(document.getElementById('donutChart'), { type: 'doughnut', data: { labels: ['Alimentación','Transporte','Servicios','Ocio','Salud','Otros'], datasets: [{ data: [850, 420, 680, 700, 85, 200], backgroundColor: ['#6C63FF','#10B981','#F59E0B','#F43F5E','#3B82F6','#8B5CF6'], borderWidth: 0, hoverOffset: 6 }] }, options: { cutout:'72%', plugins:{ legend:{display:false} }, responsive:true, maintainAspectRatio:false } });
+    new Chart(document.getElementById('barChart'), { type: 'bar', data: { labels: ['Enero','Febrero','Marzo','Abril','Mayo','Junio'], datasets: [ { label:'Ingresos', data:[5800,6000,5500,6200,6000,6500], backgroundColor:'rgba(16,185,129,0.8)', borderRadius:8 }, { label:'Gastos', data:[3200,2900,3100,2700,2770,2650], backgroundColor:'rgba(244,63,94,0.8)', borderRadius:8 } ] }, options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{ usePointStyle:true, font:{size:12} } } }, scales:{ x:{ grid:{display:false}, border:{display:false} }, y:{ grid:{color:'#F1F5F9'}, border:{display:false}, ticks:{callback:v=>'$'+v.toLocaleString()} } } } });
+  }
+
+  function initReportCharts() {
+    if (window._reportsDone) return;
+    window._reportsDone = true;
+    new Chart(document.getElementById('savingsChart'), { type:'line', data:{ labels:['Ene','Feb','Mar','Abr','May','Jun'], datasets:[{ label:'Ahorro mensual', data:[2600,3100,2400,3500,3230,3850], borderColor:'#6C63FF', backgroundColor:'rgba(108,99,255,0.1)', fill:true, tension:0.4, pointBackgroundColor:'#6C63FF', pointRadius:5 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{ x:{grid:{display:false},border:{display:false}}, y:{grid:{color:'#F1F5F9'},border:{display:false}} } } });
+    new Chart(document.getElementById('pieChart'), { type:'pie', data:{ labels:['Alimentación','Transporte','Servicios','Ocio','Salud','Hogar'], datasets:[{ data:[32,16,26,26,3,7], backgroundColor:['#6C63FF','#10B981','#F59E0B','#F43F5E','#3B82F6','#8B5CF6'], borderWidth:0 }] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right', labels:{usePointStyle:true,font:{size:12}} } } } });
+    new Chart(document.getElementById('categoryChart'), { type:'bar', data:{ labels:['Alimentación','Transporte','Servicios','Ocio','Salud','Educación'], datasets:[ { label:'Presupuesto', data:[1000,500,700,750,300,400], backgroundColor:'rgba(203,213,225,0.5)', borderRadius:6 }, { label:'Gastado', data:[850,420,680,700,85,180], backgroundColor:'rgba(108,99,255,0.8)', borderRadius:6 } ] }, options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ labels:{usePointStyle:true,font:{size:12}} } }, scales:{ x:{grid:{display:false},border:{display:false}}, y:{grid:{color:'#F1F5F9'},border:{display:false}} } } });
+  }
+
+  function openBudgetModal() { showToast('Función de presupuestos personalizados próximamente 🎯'); }
+  </script>
+</body>
+</html>
