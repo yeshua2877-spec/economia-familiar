@@ -590,6 +590,25 @@
         <button onclick="submitTransaction()" id="submitBtn" class="w-full py-4 text-white font-bold text-base rounded-2xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:16px;font-size:16px">Registrar</button>
       </div>
 
+      <!-- PASO SERVICIOS: tabla de servicios e impuestos -->
+      <div id="modalStepServicios" style="display:none">
+        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+          <button onclick="backToStep1()" style="width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+          <span style="font-size:28px">⚡</span>
+          <div>
+            <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.05em">GASTO FIJO</p>
+            <p class="font-bold">Servicios e Impuestos</p>
+          </div>
+        </div>
+
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ingresá el monto de cada servicio. Dejá en 0 los que no correspondan.</p>
+
+        <div id="serviciosRows" style="margin-bottom:16px"></div>
+
+        <input type="date" id="serviciosDate" class="input-field mb-5" />
+        <button onclick="submitServicios()" class="w-full py-4 text-white font-bold text-base" style="background:linear-gradient(135deg,#F43F5E,#FB7185);border-radius:16px;font-size:16px;border:none;cursor:pointer">Registrar servicios</button>
+      </div>
+
     </div>
   </div>
 
@@ -604,6 +623,17 @@
   let currentType = 'income';
   let selectedCategory = '';
   let pendingTx = null;
+
+  const SERVICIOS_ITEMS = [
+    { key:'electricidad',    label:'Electricidad',                    icon:'💡' },
+    { key:'gas',             label:'Gas',                             icon:'🔥' },
+    { key:'agua',            label:'Agua',                            icon:'💧' },
+    { key:'imob_mun',        label:'Imp. Inmobiliario Municipal',     icon:'🏛️' },
+    { key:'iaut_mun',        label:'Imp. Automotor Municipal',        icon:'🚗' },
+    { key:'imob_prov',       label:'Imp. Inmobiliario Provincial',    icon:'🏢' },
+    { key:'iaut_prov',       label:'Imp. Automotor Provincial',       icon:'🚘' },
+    { key:'cuota_vivienda',  label:'Cuota de la Vivienda',           icon:'🏠' },
+  ];
 
   const CATEGORIES = {
     income:  [
@@ -798,6 +828,7 @@
     selectedCategory = '';
     document.getElementById('modalStep1').style.display = 'block';
     document.getElementById('modalStep2').style.display = 'none';
+    document.getElementById('modalStepServicios').style.display = 'none';
     document.getElementById('txAmount').value = '';
     document.getElementById('txDesc').value = '';
   }
@@ -807,6 +838,7 @@
     selectedCategory = '';
     document.getElementById('modalStep1').style.display = 'block';
     document.getElementById('modalStep2').style.display = 'none';
+    document.getElementById('modalStepServicios').style.display = 'none';
     const incBtn = document.getElementById('typeIncome');
     const expBtn = document.getElementById('typeExpense');
     if (t === 'income') {
@@ -851,6 +883,14 @@
 
   function selectCat(k) {
     selectedCategory = k;
+    document.getElementById('modalStep1').style.display = 'none';
+
+    if (k === 'servicios') {
+      renderServiciosTable();
+      document.getElementById('modalStepServicios').style.display = 'block';
+      return;
+    }
+
     const catObj = CATEGORIES[currentType].find(c => c.key === k);
     document.getElementById('selectedCatIcon').textContent = catObj.icon;
     document.getElementById('selectedCatLabel').textContent = catObj.label;
@@ -858,9 +898,50 @@
     const color = currentType === 'income' ? 'linear-gradient(135deg,#10B981,#34D399)' : 'linear-gradient(135deg,#F43F5E,#FB7185)';
     document.getElementById('submitBtn').style.background = color;
     document.getElementById('submitBtn').textContent = currentType === 'income' ? 'Registrar ingreso' : 'Registrar gasto';
-    document.getElementById('modalStep1').style.display = 'none';
     document.getElementById('modalStep2').style.display = 'block';
     setTimeout(() => document.getElementById('txAmount').focus(), 100);
+  }
+
+  function renderServiciosTable() {
+    document.getElementById('serviciosRows').innerHTML = SERVICIOS_ITEMS.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F1F5F9">
+        <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${item.icon}</span>
+        <span style="flex:1;font-size:13px;font-weight:500;color:#1E293B">${item.label}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="color:#94A3B8;font-size:14px;font-weight:600">$</span>
+          <input type="number" id="srv_${item.key}" min="0" step="0.01" placeholder="0"
+            style="width:90px;border:2px solid #E2E8F0;border-radius:10px;padding:7px 10px;font-size:14px;outline:none;background:#F8FAFF;text-align:right"
+            onfocus="this.style.borderColor='#6C63FF'" onblur="this.style.borderColor='#E2E8F0'" />
+        </div>
+      </div>`).join('');
+    document.getElementById('serviciosDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  function submitServicios() {
+    const date = document.getElementById('serviciosDate').value;
+    const nuevos = SERVICIOS_ITEMS.filter(item => {
+      const v = parseFloat(document.getElementById('srv_' + item.key).value);
+      return v && v > 0;
+    }).map(item => ({
+      id: Date.now() + Math.random(),
+      type: 'expense',
+      profile: currentProfile,
+      cat: 'Servicios e Impuestos',
+      icon: '⚡',
+      desc: item.label,
+      amount: parseFloat(document.getElementById('srv_' + item.key).value),
+      date,
+      ai: false
+    }));
+
+    if (nuevos.length === 0) {
+      showToast('⚠️ Ingresá al menos un monto mayor a $0');
+      return;
+    }
+    nuevos.forEach(tx => saveTx(tx));
+    document.getElementById('txModal').classList.remove('open');
+    document.getElementById('modalStepServicios').style.display = 'none';
+    showToast(`✅ ${nuevos.length} servicio(s) registrado(s)`);
   }
 
   async function submitTransaction() {
