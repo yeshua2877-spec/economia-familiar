@@ -590,6 +590,22 @@
         <button onclick="submitTransaction()" id="submitBtn" class="w-full py-4 text-white font-bold text-base rounded-2xl" style="background:linear-gradient(135deg,#6C63FF,#9B5FFF);border-radius:16px;font-size:16px">Registrar</button>
       </div>
 
+      <!-- PASO PRÉSTAMOS -->
+      <div id="modalStepPrestamos" style="display:none">
+        <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+          <button onclick="backToStep1()" style="width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;flex-shrink:0">←</button>
+          <span style="font-size:28px">💰</span>
+          <div>
+            <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.05em">GASTO FIJO</p>
+            <p class="font-bold">Préstamos</p>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:12px">Ingresá la cuota de cada préstamo. Dejá en 0 los que no apliquen.</p>
+        <div id="prestamosRows" style="margin-bottom:16px"></div>
+        <input type="date" id="prestamosDate" class="input-field mb-5" />
+        <button onclick="submitPrestamos()" class="w-full py-4 text-white font-bold text-base" style="background:linear-gradient(135deg,#F43F5E,#FB7185);border-radius:16px;font-size:16px;border:none;cursor:pointer">Registrar préstamos</button>
+      </div>
+
       <!-- PASO TARJETAS -->
       <div id="modalStepTarjetas" style="display:none">
         <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
@@ -639,6 +655,13 @@
   let currentType = 'income';
   let selectedCategory = '';
   let pendingTx = null;
+
+  const PRESTAMOS_ITEMS = [
+    { key:'prest_santander', label:'Santander',  icon:'🏦' },
+    { key:'prest_nacion',    label:'Nación',     icon:'🏦' },
+    { key:'prest_naranja',   label:'Naranja',    icon:'🟠' },
+    { key:'prest_iaf',       label:'IAF',        icon:'🏦' },
+  ];
 
   const TARJETAS_ITEMS = [
     { key:'sant_visa',   label:'Santander Visa',            icon:'💳' },
@@ -854,6 +877,7 @@
     document.getElementById('modalStep2').style.display = 'none';
     document.getElementById('modalStepServicios').style.display = 'none';
     document.getElementById('modalStepTarjetas').style.display = 'none';
+    document.getElementById('modalStepPrestamos').style.display = 'none';
     document.getElementById('txAmount').value = '';
     document.getElementById('txDesc').value = '';
   }
@@ -865,6 +889,7 @@
     document.getElementById('modalStep2').style.display = 'none';
     document.getElementById('modalStepServicios').style.display = 'none';
     document.getElementById('modalStepTarjetas').style.display = 'none';
+    document.getElementById('modalStepPrestamos').style.display = 'none';
     const incBtn = document.getElementById('typeIncome');
     const expBtn = document.getElementById('typeExpense');
     if (t === 'income') {
@@ -923,6 +948,12 @@
       return;
     }
 
+    if (k === 'prestamos') {
+      renderPrestamosTable();
+      document.getElementById('modalStepPrestamos').style.display = 'block';
+      return;
+    }
+
     const catObj = CATEGORIES[currentType].find(c => c.key === k);
     document.getElementById('selectedCatIcon').textContent = catObj.icon;
     document.getElementById('selectedCatLabel').textContent = catObj.label;
@@ -932,6 +963,48 @@
     document.getElementById('submitBtn').textContent = currentType === 'income' ? 'Registrar ingreso' : 'Registrar gasto';
     document.getElementById('modalStep2').style.display = 'block';
     setTimeout(() => document.getElementById('txAmount').focus(), 100);
+  }
+
+  function renderPrestamosTable() {
+    document.getElementById('prestamosRows').innerHTML = PRESTAMOS_ITEMS.map(item => `
+      <div style="display:flex;align-items:center;gap:12px;padding:10px 4px;border-bottom:1px solid #F1F5F9">
+        <span style="font-size:20px;width:28px;text-align:center;flex-shrink:0">${item.icon}</span>
+        <span style="flex:1;font-size:13px;font-weight:500;color:#1E293B">${item.label}</span>
+        <div style="display:flex;align-items:center;gap:4px">
+          <span style="color:#94A3B8;font-size:14px;font-weight:600">$</span>
+          <input type="number" id="pre_${item.key}" min="0" step="0.01" placeholder="0"
+            style="width:90px;border:2px solid #E2E8F0;border-radius:10px;padding:7px 10px;font-size:14px;outline:none;background:#F8FAFF;text-align:right"
+            onfocus="this.style.borderColor='#6C63FF'" onblur="this.style.borderColor='#E2E8F0'" />
+        </div>
+      </div>`).join('');
+    document.getElementById('prestamosDate').value = new Date().toISOString().split('T')[0];
+  }
+
+  function submitPrestamos() {
+    const date = document.getElementById('prestamosDate').value;
+    const nuevos = PRESTAMOS_ITEMS.filter(item => {
+      const v = parseFloat(document.getElementById('pre_' + item.key).value);
+      return v && v > 0;
+    }).map(item => ({
+      id: Date.now() + Math.random(),
+      type: 'expense',
+      profile: currentProfile,
+      cat: 'Préstamos',
+      icon: '💰',
+      desc: item.label,
+      amount: parseFloat(document.getElementById('pre_' + item.key).value),
+      date,
+      ai: false
+    }));
+
+    if (nuevos.length === 0) {
+      showToast('⚠️ Ingresá al menos un monto mayor a $0');
+      return;
+    }
+    nuevos.forEach(tx => saveTx(tx));
+    document.getElementById('txModal').classList.remove('open');
+    document.getElementById('modalStepPrestamos').style.display = 'none';
+    showToast(`✅ ${nuevos.length} préstamo(s) registrado(s)`);
   }
 
   function renderTarjetasTable() {
