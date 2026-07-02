@@ -1473,6 +1473,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tx)
       });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       transactions.push(await resp.json());
     } catch (e) {
       transactions.push(tx);
