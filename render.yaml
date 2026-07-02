@@ -1,3 +1,9 @@
+databases:
+  - name: economia-familiar-db
+    plan: free
+    databaseName: economia_familiar
+    user: economia_familiar
+
 services:
   - type: web
     name: economia-familiar
@@ -11,3 +17,7 @@ services:
         sync: false
       - key: SECRET_KEY
         sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: economia-familiar-db
+          property: connectionString

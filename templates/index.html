@@ -804,27 +804,23 @@
     { cat:'Educación',    icon:'📚', limit:400,  spent:180,  color:'#8B5CF6' },
   ];
 
-  let transactions = JSON.parse(localStorage.getItem('txs') || '[]');
-  if (transactions.length === 0) {
-    transactions = [
-      { id:1,  type:'income',  profile:'p1',  cat:'salario',    icon:'💼', desc:'Salario junio',        amount:3500, date:'2026-06-01', ai:false },
-      { id:2,  type:'income',  profile:'p2',  cat:'salario',    icon:'💼', desc:'Salario junio',        amount:3000, date:'2026-06-01', ai:false },
-      { id:3,  type:'expense', profile:'p1',  cat:'alimentacion',icon:'🛒',desc:'Supermercado',         amount:320,  date:'2026-06-05', ai:false },
-      { id:4,  type:'expense', profile:'p1',  cat:'ocio',       icon:'🎮', desc:'Netflix + Spotify',    amount:45,   date:'2026-06-08', ai:false },
-      { id:5,  type:'expense', profile:'p2',  cat:'transporte', icon:'🚗', desc:'Gasolina semanal',     amount:120,  date:'2026-06-10', ai:false },
-      { id:6,  type:'expense', profile:'p1',  cat:'ocio',       icon:'🎮', desc:'Cena restaurante',     amount:85,   date:'2026-06-14', ai:true  },
-      { id:7,  type:'expense', profile:'p2',  cat:'ropa',       icon:'👕', desc:'Ropa verano',          amount:210,  date:'2026-06-16', ai:true  },
-      { id:8,  type:'expense', profile:'p1',  cat:'salud',      icon:'🏥', desc:'Farmacia',             amount:45,   date:'2026-06-18', ai:false },
-      { id:9,  type:'income',  profile:'p1',  cat:'freelance',  icon:'💻', desc:'Proyecto diseño web',  amount:800,  date:'2026-06-20', ai:false },
-      { id:10, type:'expense', profile:'p2',  cat:'ahorros',    icon:'🏦', desc:'Ahorro mensual',        amount:180,  date:'2026-06-22', ai:false },
-    ];
-    localStorage.setItem('txs', JSON.stringify(transactions));
+  let transactions = [];
+
+  async function loadTransactions() {
+    try {
+      const resp = await fetch('/api/transactions');
+      transactions = await resp.json();
+    } catch (e) {
+      transactions = [];
+      showToast('⚠️ No se pudieron cargar los datos compartidos');
+    }
   }
 
   // ──────────────────────────────────────────────
   // INIT
   // ──────────────────────────────────────────────
-  window.onload = () => {
+  window.onload = async () => {
+    await loadTransactions();
     updateGreeting();
     updateDate();
     renderRecentTx();
@@ -1471,9 +1467,18 @@
     showToast('Gasto cancelado');
   }
 
-  function saveTx(tx) {
-    transactions.push(tx);
-    localStorage.setItem('txs', JSON.stringify(transactions));
+  async function saveTx(tx) {
+    try {
+      const resp = await fetch('/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(tx)
+      });
+      transactions.push(await resp.json());
+    } catch (e) {
+      transactions.push(tx);
+      showToast('⚠️ No se pudo guardar en el servidor, se guardó solo localmente');
+    }
     renderRecentTx();
     renderFullTx();
   }

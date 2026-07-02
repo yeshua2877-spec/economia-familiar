@@ -4,6 +4,7 @@ from functools import wraps
 from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 from anthropic import Anthropic
 from dotenv import load_dotenv
+import psycopg2
 
 load_dotenv()
 
@@ -12,6 +13,80 @@ app.secret_key = os.environ.get("SECRET_KEY", "dev-secret-change-in-prod")
 client = Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
 
 APP_PASSWORD = os.environ.get("APP_PASSWORD", "familia2026")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+# Datos de ejemplo con los que se precarga la tabla la primera vez que se conecta a una DB vacía.
+SEED_TRANSACTIONS = [
+    (1,  "income",  "p1", "salario",      "💼", "Salario junio",       3500, "2026-06-01", False),
+    (2,  "income",  "p2", "salario",      "💼", "Salario junio",       3000, "2026-06-01", False),
+    (3,  "expense", "p1", "alimentacion", "🛒", "Supermercado",        320,  "2026-06-05", False),
+    (4,  "expense", "p1", "ocio",         "🎮", "Netflix + Spotify",   45,   "2026-06-08", False),
+    (5,  "expense", "p2", "transporte",   "🚗", "Gasolina semanal",    120,  "2026-06-10", False),
+    (6,  "expense", "p1", "ocio",         "🎮", "Cena restaurante",    85,   "2026-06-14", True),
+    (7,  "expense", "p2", "ropa",         "👕", "Ropa verano",         210,  "2026-06-16", True),
+    (8,  "expense", "p1", "salud",        "🏥", "Farmacia",            45,   "2026-06-18", False),
+    (9,  "income",  "p1", "freelance",    "💻", "Proyecto diseño web", 800,  "2026-06-20", False),
+    (10, "expense", "p2", "ahorros",      "🏦", "Ahorro mensual",      180,  "2026-06-22", False),
+]
+
+
+def get_db():
+    if not DATABASE_URL:
+        raise RuntimeError(
+            "Falta configurar DATABASE_URL (base de datos PostgreSQL) en las variables de entorno."
+        )
+    return psycopg2.connect(DATABASE_URL)
+
+
+def init_db():
+    if not DATABASE_URL:
+        return
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("""
+                CREATE TABLE IF NOT EXISTS transactions (
+                    id BIGSERIAL PRIMARY KEY,
+                    type TEXT NOT NULL,
+                    profile TEXT NOT NULL,
+                    cat TEXT NOT NULL,
+                    icon TEXT,
+                    description TEXT,
+                    amount NUMERIC NOT NULL,
+                    date DATE NOT NULL,
+                    ai BOOLEAN DEFAULT FALSE
+                )
+            """)
+            cur.execute("SELECT COUNT(*) FROM transactions")
+            if cur.fetchone()[0] == 0:
+                cur.executemany(
+                    """INSERT INTO transactions (id, type, profile, cat, icon, description, amount, date, ai)
+                       VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)""",
+                    SEED_TRANSACTIONS,
+                )
+                cur.execute(
+                    "SELECT setval(pg_get_serial_sequence('transactions','id'), (SELECT MAX(id) FROM transactions))"
+                )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+init_db()
+
+
+def row_to_tx(row):
+    return {
+        "id": row[0],
+        "type": row[1],
+        "profile": row[2],
+        "cat": row[3],
+        "icon": row[4],
+        "desc": row[5],
+        "amount": float(row[6]),
+        "date": row[7].isoformat() if hasattr(row[7], "isoformat") else row[7],
+        "ai": row[8],
+    }
 
 
 def login_required(f):
@@ -45,6 +120,51 @@ def logout():
 @login_required
 def index():
     return render_template("index.html")
+
+
+@app.route("/api/transactions", methods=["GET"])
+@login_required
+def get_transactions():
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT id, type, profile, cat, icon, description, amount, date, ai "
+                "FROM transactions ORDER BY date, id"
+            )
+            rows = cur.fetchall()
+        return jsonify([row_to_tx(r) for r in rows])
+    finally:
+        conn.close()
+
+
+@app.route("/api/transactions", methods=["POST"])
+@login_required
+def create_transaction():
+    data = request.json
+    conn = get_db()
+    try:
+        with conn.cursor() as cur:
+            cur.execute(
+                """INSERT INTO transactions (type, profile, cat, icon, description, amount, date, ai)
+                   VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
+                   RETURNING id, type, profile, cat, icon, description, amount, date, ai""",
+                (
+                    data.get("type"),
+                    data.get("profile"),
+                    data.get("cat"),
+                    data.get("icon"),
+                    data.get("desc"),
+                    data.get("amount"),
+                    data.get("date"),
+                    data.get("ai", False),
+                ),
+            )
+            row = cur.fetchone()
+        conn.commit()
+        return jsonify(row_to_tx(row))
+    finally:
+        conn.close()
 
 
 @app.route("/analizar-gasto", methods=["POST"])
