@@ -260,12 +260,12 @@
       <div class="flex flex-col gap-2">
         <div class="sidebar-link py-2" id="sb-p1" onclick="switchProfile('p1')" style="background:rgba(108,99,255,0.25);color:white">
           <span>👤</span>
-          <span>Persona 1</span>
+          <span>Michel</span>
           <span class="ml-auto w-2 h-2 rounded-full bg-green-400"></span>
         </div>
         <div class="sidebar-link py-2" id="sb-p2" onclick="switchProfile('p2')" style="color:rgba(255,255,255,0.5)">
           <span>👤</span>
-          <span>Persona 2</span>
+          <span>Lau</span>
         </div>
         <div class="sidebar-link py-2" id="sb-family" onclick="switchProfile('family')" style="color:rgba(255,255,255,0.5)">
           <span>👨‍👩‍👧</span>
@@ -289,8 +289,8 @@
       <div class="flex items-center gap-3">
         <!-- Profile tabs -->
         <div class="card flex gap-1 p-1.5 flex-row">
-          <div class="profile-badge active-p1" id="tab-p1" onclick="switchProfile('p1')">👤 Persona 1</div>
-          <div class="profile-badge inactive" id="tab-p2" onclick="switchProfile('p2')">👤 Persona 2</div>
+          <div class="profile-badge active-p1" id="tab-p1" onclick="switchProfile('p1')">👤 Michel</div>
+          <div class="profile-badge inactive" id="tab-p2" onclick="switchProfile('p2')">👤 Lau</div>
           <div class="profile-badge inactive" id="tab-family" onclick="switchProfile('family')">👨‍👩‍👧 Familia</div>
         </div>
         <!-- Month -->
@@ -889,7 +889,7 @@
     document.getElementById(`tab-${p}`).className = `profile-badge ${cls}`;
     document.getElementById(`sb-${p}`).style.background = 'rgba(108,99,255,0.25)';
     document.getElementById(`sb-${p}`).style.color = 'white';
-    const titles = { p1:'Mi Economía — Persona 1', p2:'Mi Economía — Persona 2', family:'Economía Familiar' };
+    const titles = { p1:'Mi Economía — Michel', p2:'Mi Economía — Lau', family:'Economía Familiar' };
     document.getElementById('profileTitle').textContent = titles[p];
     renderRecentTx();
     renderFullTx();
@@ -911,8 +911,7 @@
   // RENDER TRANSACTIONS
   // ──────────────────────────────────────────────
   function getTx() {
-    if (currentProfile === 'family') return transactions;
-    return transactions.filter(t => t.profile === currentProfile);
+    return transactions;
   }
 
   function txHTML(t, mini = false) {
