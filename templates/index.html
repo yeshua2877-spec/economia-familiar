@@ -143,7 +143,6 @@
     }
     .profile-badge.active-p1 { background: #EDE9FF; color: #6C63FF; border-color: #6C63FF; }
     .profile-badge.active-p2 { background: #FFF0F6; color: #EC4899; border-color: #EC4899; }
-    .profile-badge.active-family { background: #F0FDF4; color: #10B981; border-color: #10B981; }
     .profile-badge.inactive { background: #F1F5F9; color: #94A3B8; }
 
     /* View sections */
@@ -267,10 +266,6 @@
           <span>👤</span>
           <span>Lau</span>
         </div>
-        <div class="sidebar-link py-2" id="sb-family" onclick="switchProfile('family')" style="color:rgba(255,255,255,0.5)">
-          <span>👨‍👩‍👧</span>
-          <span>Vista Familiar</span>
-        </div>
       </div>
     </div>
   </aside>
@@ -291,7 +286,6 @@
         <div class="card flex gap-1 p-1.5 flex-row">
           <div class="profile-badge active-p1" id="tab-p1" onclick="switchProfile('p1')">👤 Michel</div>
           <div class="profile-badge inactive" id="tab-p2" onclick="switchProfile('p2')">👤 Lau</div>
-          <div class="profile-badge inactive" id="tab-family" onclick="switchProfile('family')">👨‍👩‍👧 Familia</div>
         </div>
         <!-- Month -->
         <div class="card px-4 py-2.5 flex items-center gap-2">
@@ -880,16 +874,16 @@
   // ──────────────────────────────────────────────
   function switchProfile(p) {
     currentProfile = p;
-    ['p1','p2','family'].forEach(x => {
+    ['p1','p2'].forEach(x => {
       document.getElementById(`tab-${x}`).className = 'profile-badge inactive';
       document.getElementById(`sb-${x}`).style.background = '';
       document.getElementById(`sb-${x}`).style.color = 'rgba(255,255,255,0.5)';
     });
-    const cls = p === 'p1' ? 'active-p1' : p === 'p2' ? 'active-p2' : 'active-family';
+    const cls = p === 'p1' ? 'active-p1' : 'active-p2';
     document.getElementById(`tab-${p}`).className = `profile-badge ${cls}`;
     document.getElementById(`sb-${p}`).style.background = 'rgba(108,99,255,0.25)';
     document.getElementById(`sb-${p}`).style.color = 'white';
-    const titles = { p1:'Mi Economía — Michel', p2:'Mi Economía — Lau', family:'Economía Familiar' };
+    const titles = { p1:'Mi Economía — Michel', p2:'Mi Economía — Lau' };
     document.getElementById('profileTitle').textContent = titles[p];
     renderRecentTx();
     renderFullTx();
