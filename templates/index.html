@@ -708,6 +708,38 @@
     </div>
   </div>
 
+  <!-- MODAL DETALLE DE PRESUPUESTO -->
+  <div class="modal-bg" id="budgetDetailModal" onclick="closeBudgetDetail(event)">
+    <div class="modal" style="max-width:560px" onclick="event.stopPropagation()">
+      <div class="flex items-center gap-3 mb-5 pb-4" style="border-bottom:2px solid #F1F5F9">
+        <span id="budgetDetailIcon" style="font-size:28px"></span>
+        <div class="flex-1">
+          <p style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.05em">DETALLE DE GASTOS</p>
+          <p class="font-bold" id="budgetDetailTitle"></p>
+        </div>
+        <button onclick="document.getElementById('budgetDetailModal').classList.remove('open')" style="width:36px;height:36px;border-radius:10px;background:#F1F5F9;border:none;cursor:pointer;font-size:18px;flex-shrink:0">✕</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead>
+            <tr style="background:#F8FAFF">
+              <th style="text-align:left;padding:10px 12px;border:1px solid #E2E8F0;font-weight:700;color:var(--muted)">Fecha</th>
+              <th style="text-align:left;padding:10px 12px;border:1px solid #E2E8F0;font-weight:700;color:var(--muted)">Descripción</th>
+              <th style="text-align:right;padding:10px 12px;border:1px solid #E2E8F0;font-weight:700;color:var(--muted)">Monto</th>
+            </tr>
+          </thead>
+          <tbody id="budgetDetailRows"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" style="text-align:right;padding:10px 12px;border:1px solid #E2E8F0;font-weight:700">Total</td>
+              <td id="budgetDetailTotal" style="text-align:right;padding:10px 12px;border:1px solid #E2E8F0;font-weight:700"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══════════════════════════════════════════════
        SCRIPT
   ═══════════════════════════════════════════════ -->
@@ -795,12 +827,12 @@
   };
 
   const BUDGETS = [
-    { cat:'Alimentación', icon:'🛒', limit:1000, spent:850,  color:'#6C63FF' },
-    { cat:'Transporte',   icon:'🚗', limit:500,  spent:420,  color:'#10B981' },
-    { cat:'Servicios',    icon:'⚡', limit:700,  spent:680,  color:'#F59E0B' },
-    { cat:'Ocio',         icon:'🎮', limit:750,  spent:700,  color:'#F43F5E' },
-    { cat:'Salud',        icon:'🏥', limit:300,  spent:85,   color:'#3B82F6' },
-    { cat:'Educación',    icon:'📚', limit:400,  spent:180,  color:'#8B5CF6' },
+    { cat:'Alimentación', key:'alimentacion', icon:'🛒', limit:1000, spent:850,  color:'#6C63FF' },
+    { cat:'Transporte',   key:'transporte',   icon:'🚗', limit:500,  spent:420,  color:'#10B981' },
+    { cat:'Servicios',    key:'servicios',    icon:'⚡', limit:700,  spent:680,  color:'#F59E0B' },
+    { cat:'Ocio',         key:'ocio',         icon:'🎮', limit:750,  spent:700,  color:'#F43F5E' },
+    { cat:'Salud',        key:'salud',        icon:'🏥', limit:300,  spent:85,   color:'#3B82F6' },
+    { cat:'Educación',    key:'educacion',    icon:'📚', limit:400,  spent:180,  color:'#8B5CF6' },
   ];
 
   let transactions = [];
@@ -921,7 +953,7 @@
       const over = pct >= 90;
       const barColor = pct >= 90 ? '#F43F5E' : pct >= 70 ? '#F59E0B' : '#10B981';
       return `
-      <div class="card p-6">
+      <div class="card p-6" style="cursor:pointer" onclick="openBudgetDetail('${b.key}')">
         <div class="flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl" style="background:#F8FAFF;border-radius:12px">${b.icon}</div>
@@ -938,6 +970,33 @@
         ${over ? `<p style="color:#F43F5E;font-size:12px;font-weight:600;margin-top:8px">⚠️ Límite casi alcanzado</p>` : ''}
       </div>`;
     }).join('');
+  }
+
+  function openBudgetDetail(key) {
+    const budget = BUDGETS.find(b => b.key === key);
+    const catObj = CATEGORIES.expense.find(c => c.key === key);
+    const rows = getTx()
+      .filter(t => t.type === 'expense' && t.cat === catObj.label)
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date));
+
+    document.getElementById('budgetDetailIcon').textContent = budget.icon;
+    document.getElementById('budgetDetailTitle').textContent = budget.cat;
+    document.getElementById('budgetDetailRows').innerHTML = rows.map((t, i) => `
+      <tr style="background:${i % 2 === 0 ? 'white' : '#FAFBFF'}">
+        <td style="padding:10px 12px;border:1px solid #E2E8F0">${t.date}</td>
+        <td style="padding:10px 12px;border:1px solid #E2E8F0">${t.desc}</td>
+        <td style="padding:10px 12px;border:1px solid #E2E8F0;text-align:right">$${t.amount.toFixed(2)}</td>
+      </tr>`).join('') || `<tr><td colspan="3" style="padding:16px;text-align:center;color:var(--muted);border:1px solid #E2E8F0">No hay gastos cargados en esta categoría</td></tr>`;
+    document.getElementById('budgetDetailTotal').textContent = `$${rows.reduce((s, t) => s + t.amount, 0).toFixed(2)}`;
+
+    document.getElementById('budgetDetailModal').classList.add('open');
+  }
+
+  function closeBudgetDetail(e) {
+    if (e.target === document.getElementById('budgetDetailModal')) {
+      document.getElementById('budgetDetailModal').classList.remove('open');
+    }
   }
 
   // ──────────────────────────────────────────────
